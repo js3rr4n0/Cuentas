@@ -127,7 +127,7 @@ p { margin: 0; }
   max-width: 1160px;
   margin: 0 auto;
   padding-inline: 16px;
-  padding-block: 0 calc(var(--dock-h) + 44px + env(safe-area-inset-bottom, 0px));
+  padding-block: 0 calc(var(--dock-h) + 96px + env(safe-area-inset-bottom, 0px));
 }
 .masthead {
   position: sticky;
@@ -201,7 +201,7 @@ p { margin: 0; }
 }
 .tabs {
   display: grid;
-  grid-template-columns: 1fr 1fr 80px 1fr 1fr;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   max-width: 560px;
   height: var(--dock-h);
   margin: 0 auto;
@@ -232,14 +232,11 @@ p { margin: 0; }
   background: var(--ink);
   border-radius: 0 0 2px 2px;
 }
-.tab:nth-child(3) { grid-column: 4; }
-.tab:nth-child(4) { grid-column: 5; }
 .fab {
-  position: absolute;
-  left: 50%;
-  top: -20px;
-  transform: translateX(-50%);
-  width: 60px;
+  position: fixed;
+  right: 16px;
+  bottom: calc(var(--dock-h) + 16px + env(safe-area-inset-bottom, 0px));
+  width: 58px;
   height: 60px;
   border: 0;
   border-radius: 50%;
@@ -247,10 +244,10 @@ p { margin: 0; }
   color: var(--pen-ink);
   display: grid;
   place-items: center;
-  box-shadow: 0 0 0 5px var(--paper), 0 10px 24px -8px rgba(0, 0, 0, .5);
+  box-shadow: 0 10px 24px -8px rgba(0, 0, 0, .55);
 }
 .fab svg { width: 26px; height: 26px; }
-.fab:active { transform: translateX(-50%) scale(.96); }
+.fab:active { transform: scale(.96); }
 
 /* ---------- Vistas y tarjetas ---------- */
 .view { display: grid; gap: 14px; padding-top: 14px; }
@@ -443,6 +440,39 @@ p { margin: 0; }
 .sa-amt span { font-size: 20px; font-weight: 600; color: var(--ink-3); }
 .sa-hint { margin: 0; padding: 8px 10px; border-radius: 9px; background: var(--sheet-2); border: 1px dashed var(--rule-2); font-size: 13px; font-weight: 600; color: var(--ink-2); }
 @media (max-width: 380px) { .sa-row { grid-template-columns: minmax(0, 1fr) auto; } .sa-row .pill { grid-row: 2; grid-column: 1 / -1; justify-self: start; } }
+
+/* Tarjetas */
+.dot-p { background: var(--ink-3); }
+.mov-amt.p { color: var(--ink-2); }
+.tj-sum { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+.tj-sum .stat { display: block; }
+.tj-sum .stat .val { margin-top: 2px; }
+.tj-top { margin: 14px 0 2px; font-size: 14px; color: var(--ink-2); }
+.tj-top b { color: var(--ink); }
+.tj-list { display: grid; gap: 14px; }
+.tj {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: 16px 16px 14px;
+  background: var(--sheet);
+  border: 1px solid var(--rule-2);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+.tj::before { content: ""; position: absolute; left: 16px; right: 16px; top: 0; height: 3px; border-radius: 0 0 3px 3px; background: var(--ink); opacity: .85; }
+.tj-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.tj-name { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; }
+.tj-n { font-weight: 750; font-stretch: 110%; font-size: 16px; overflow-wrap: anywhere; margin-right: 2px; }
+.tj-lab { font-size: 12.5px; color: var(--ink-3); margin-top: 4px; }
+.tj-big { font-size: 28px; font-weight: 750; letter-spacing: -.02em; line-height: 1.1; overflow-wrap: anywhere; }
+.tj-meter { margin-top: 4px; }
+.tj-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px; margin: 6px 0 0; padding-top: 10px; border-top: 1px dashed var(--rule-2); }
+.tj-stats dt { font-size: 12px; color: var(--ink-3); }
+.tj-stats dd { margin: 1px 0 0; font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 600; }
+.tj-actions { margin-top: 4px; }
+#dm-card-row .chips { margin-top: 2px; }
 
 /* Leyenda y gráficas */
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 6px; font-size: 12.5px; color: var(--ink-2); }
@@ -794,7 +824,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
 .toast {
   position: fixed;
   left: 50%;
-  bottom: calc(var(--dock-h) + 26px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(var(--dock-h) + 88px + env(safe-area-inset-bottom, 0px));
   z-index: 60;
   display: flex;
   align-items: center;
@@ -833,7 +863,6 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
   }
-  .tab:nth-child(3), .tab:nth-child(4) { grid-column: auto; }
   .tab svg { width: 18px; height: 18px; }
   .tab[aria-selected="true"] { border-bottom-color: var(--ink); }
   .tab[aria-selected="true"]::before { display: none; }
@@ -869,6 +898,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     <nav class="tabs" role="tablist" aria-label="Secciones">
       <button class="tab" role="tab" type="button" id="tab-resumen" data-tab="resumen" aria-controls="v-resumen" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7 10h7M7 14h4M15 14h2"/></svg><span>Resumen</span></button>
       <button class="tab" role="tab" type="button" id="tab-movimientos" data-tab="movimientos" aria-controls="v-movimientos" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="M4.5 6.5h.01M4.5 12h.01M4.5 17.5h.01" stroke-width="2.6"/></svg><span>Movimientos</span></button>
+      <button class="tab" role="tab" type="button" id="tab-tarjetas" data-tab="tarjetas" aria-controls="v-tarjetas" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19M6.5 15h4"/></svg><span>Tarjetas</span></button>
       <button class="tab" role="tab" type="button" id="tab-analisis" data-tab="analisis" aria-controls="v-analisis" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20h17"/><path d="M7 16.5v-5M12 16.5V6M17 16.5V9.5"/></svg><span>Análisis</span></button>
       <button class="tab" role="tab" type="button" id="tab-categorias" data-tab="categorias" aria-controls="v-categorias" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l8.3 8.3a1.2 1.2 0 0 1 0 1.7l-6.5 6.5a1.2 1.2 0 0 1-1.7 0z"/><circle cx="8" cy="8" r="1.4"/></svg><span>Categorías</span></button>
     </nav>
@@ -905,6 +935,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
             <button type="button" class="chip" data-act="ftipo" data-v="g" aria-pressed="false"><i class="dot dot-g"></i>Gastos</button>
             <button type="button" class="chip" data-act="ftipo" data-v="i" aria-pressed="false"><i class="dot dot-i"></i>Ingresos</button>
             <button type="button" class="chip" data-act="ftipo" data-v="a" aria-pressed="false"><i class="dot dot-a"></i>Ahorro</button>
+            <button type="button" class="chip" data-act="ftipo" data-v="p" aria-pressed="false"><i class="dot dot-p"></i>Pagos de tarjeta</button>
           </div>
           <div class="filters">
             <div class="field"><label for="f-cat">Categoría</label><select class="input" id="f-cat"></select></div>
@@ -931,6 +962,37 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
         <article class="card" id="a-ahorro" style="--o:4"></article>
       </div>
       <article class="card wide" id="a-historial" style="--o:7"></article>
+    </section>
+
+    <section class="view two" id="v-tarjetas" role="tabpanel" aria-labelledby="tab-tarjetas" hidden>
+      <div class="col">
+        <article class="card" id="t-resumen" style="--o:1"></article>
+        <div class="tj-list" id="t-list" style="--o:2"></div>
+      </div>
+      <div class="col">
+        <article class="card" id="t-form" style="--o:3">
+          <div class="card-h"><div><h2 class="card-t" id="tj-title">Agregar tarjeta</h2><p class="card-sub">Solo el nombre es obligatorio.</p></div></div>
+          <form id="tj-form" class="sa-form" data-for="x" novalidate>
+            <div class="field"><label for="tj-n">Nombre</label><input class="input" id="tj-n" autocomplete="off" placeholder="Ej. Visa BAC, Clásica Agrícola"></div>
+            <div class="field"><span class="lbl">Tipo</span><div class="seg sm" style="--n:2" role="radiogroup" aria-label="Tipo de tarjeta">
+              <label><input type="radio" name="tj-t" id="tj-t-c" value="c" checked><span>Crédito</span></label>
+              <label><input type="radio" name="tj-t" id="tj-t-d" value="d"><span>Débito</span></label>
+            </div></div>
+            <div class="field"><label for="tj-cat">Categoría (opcional)</label><input class="input" id="tj-cat" list="tj-cat-list" autocomplete="off" placeholder="Ej. Personal, Negocio, Emergencias"></div>
+            <datalist id="tj-cat-list"><option value="Personal"></option><option value="Negocio"></option><option value="Emergencias"></option><option value="Compras en línea"></option><option value="Viajes"></option></datalist>
+            <div id="tj-credit" class="sa-form">
+              <div class="field-row">
+                <div class="field"><label for="tj-tasa">Tasa de interés anual % (opcional)</label><input class="input" id="tj-tasa" inputmode="decimal" autocomplete="off" placeholder="Ej. 36"></div>
+                <div class="field"><label for="tj-lim">Límite (opcional)</label><input class="input" id="tj-lim" inputmode="decimal" autocomplete="off" placeholder="Ej. 1500"></div>
+              </div>
+              <div class="field"><label for="tj-deuda">Lo que debes hoy</label><input class="input" id="tj-deuda" inputmode="decimal" autocomplete="off" placeholder="0.00"><span class="hint">Desde aquí se suman tus gastos con la tarjeta y se restan tus pagos.</span></div>
+            </div>
+            <p class="form-error" id="tj-err" role="alert"></p>
+            <div class="btn-row"><button class="btn btn-primary btn-sm" type="submit" id="tj-save">Agregar tarjeta</button><button class="btn btn-sm" type="button" data-act="card-cancel" id="tj-cancel" hidden>Cancelar</button><span style="flex:1"></span><button class="btn btn-danger btn-sm" type="button" data-act="card-del" id="tj-del" hidden>Eliminar</button></div>
+          </form>
+        </article>
+      </div>
+      <article class="card wide" id="t-hist" style="--o:4" hidden></article>
     </section>
 
     <section class="view two" id="v-categorias" role="tabpanel" aria-labelledby="tab-categorias" hidden>
@@ -1006,6 +1068,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
         <label for="dm-met" id="dm-met-l">Método de pago</label>
         <input class="input" id="dm-met" autocomplete="off" placeholder="Elige abajo o escribe uno nuevo">
         <div class="chips" id="dm-met-chips"></div>
+        <div class="new-kind" id="dm-card-row" hidden></div>
         <p class="sa-hint" id="dm-met-hint" hidden></p>
       </div>
       <div class="field-row">
@@ -1021,6 +1084,25 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       <button type="button" class="btn" data-act="close-mov">Cancelar</button>
       <button type="submit" class="btn btn-primary" id="dm-save">Guardar gasto</button>
     </div>
+  </form>
+</dialog>
+
+<dialog class="sheet" id="dlg-pago" aria-labelledby="pg-title">
+  <form id="f-pago" novalidate>
+    <div class="sheet-head"><h2 id="pg-title">Pago de tarjeta</h2><button type="button" class="icon-btn" data-act="close-pago" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="sheet-body">
+      <div class="field"><label for="pg-tj">Tarjeta</label><select class="input" id="pg-tj"></select></div>
+      <p class="sa-hint" id="pg-hint" hidden></p>
+      <div><label class="amount-field" for="pg-monto"><span class="cur" aria-hidden="true">$</span><span class="sr-only">Monto pagado</span><input id="pg-monto" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00"></label></div>
+      <div class="field"><label for="pg-desde">Pagaste desde</label><select class="input" id="pg-desde"></select></div>
+      <p class="sa-hint" id="pg-ah" hidden>Este pago se restará de tus ahorros.</p>
+      <div class="field-row">
+        <div class="field"><label for="pg-nota">Nota</label><input class="input" id="pg-nota" autocomplete="off" placeholder="Ej. Pago mínimo"></div>
+        <div class="field"><label for="pg-fecha">Fecha</label><input class="input" id="pg-fecha" type="date"></div>
+      </div>
+      <p class="form-error" id="pg-err" role="alert"></p>
+    </div>
+    <div class="sheet-foot"><button type="button" class="btn btn-danger" id="pg-del" data-act="del-pago" hidden>Eliminar</button><span class="spacer"></span><button type="button" class="btn" data-act="close-pago">Cancelar</button><button type="submit" class="btn btn-primary">Guardar pago</button></div>
   </form>
 </dialog>
 
@@ -1055,7 +1137,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
   var MESES_C = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
   var DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-  var TIPO = { g: 'Gasto', i: 'Ingreso', a: 'Ahorro' };
+  var TIPO = { g: 'Gasto', i: 'Ingreso', a: 'Ahorro', p: 'Pago de tarjeta' };
   var TIPO_PL = { g: 'Gastos', i: 'Ingresos', a: 'Ahorro' };
   var KIND = { f: 'Fijo', n: 'Necesario', r: 'Recortable' };
   var KIND_HINT = {
@@ -1287,6 +1369,35 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     return { ini: pr.ahIni, fecha: d0, saldo: round2(total), rows: rows };
   }
 
+  /* ============ Tarjetas ============ */
+  function tarjetasData(A) {
+    var cards = metList().filter(function (x) { return x.card; }), by = {};
+    cards.forEach(function (c) { by[c.id] = { c: c, mes: {}, dmes: {}, deuda: c.d0, gasTot: 0, pagTot: 0, n: 0, first: null }; });
+    A.movs.forEach(function (m) {
+      var s = by[m.t === 'p' ? m.tj : m.p];
+      if (!s || m.t === 'a') return;
+      var k = m.f.slice(0, 7), r = s.mes[k] || (s.mes[k] = { g: 0, pg: 0, ref: 0 });
+      if (m.t === 'g') { r.g += m.m; s.gasTot += m.m; }
+      else if (m.t === 'p') { r.pg += m.m; s.pagTot += m.m; }
+      else r.ref += m.m;
+      s.n++;
+      if (!s.first || m.f < s.first) s.first = m.f;
+      if (s.c.tipo === 'c' && (!s.c.f0 || m.f >= s.c.f0)) {
+        var dl = m.t === 'g' ? m.m : -m.m;
+        s.deuda += dl;
+        s.dmes[k] = (s.dmes[k] || 0) + dl;
+      }
+    });
+    var list = cards.map(function (c) {
+      var s = by[c.id];
+      s.deuda = round2(s.deuda);
+      s.util = c.tipo === 'c' && c.lim ? Math.max(0, s.deuda) / c.lim : null;
+      s.interes = c.tipo === 'c' && c.tasa ? Math.max(0, s.deuda) * c.tasa / 100 / 12 : 0;
+      return s;
+    });
+    return { list: list, by: by };
+  }
+
   function cfg() { return data.config || DEF; }
   function catMap() { return cfg().cats || {}; }
   var AH_MET = 'p-ahorros';
@@ -1310,7 +1421,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   }
   function metList() {
     var m = metMap();
-    return Object.keys(m).filter(function (id) { return m[id]; }).map(function (id) { return { id: id, n: m[id].n, ord: m[id].ord || 0, ah: m[id].ah ? 1 : 0 }; })
+    return Object.keys(m).filter(function (id) { return m[id]; }).map(function (id) { var x = m[id]; return { id: id, n: x.n, ord: x.ord || 0, ah: x.ah ? 1 : 0, card: x.card ? 1 : 0, tipo: x.tipo === 'd' ? 'd' : 'c', cat: x.cat || '', tasa: x.tasa > 0 ? Number(x.tasa) : null, lim: x.lim > 0 ? Number(x.lim) : null, d0: Number(x.d0) || 0, f0: x.f0 || '' }; })
       .sort(function (a, b) { return a.ord - b.ord || a.n.localeCompare(b.n, 'es'); });
   }
   function metName(id) { var m = metMap()[id]; return m ? m.n : (id && id !== '_none' ? 'Método eliminado' : 'Sin método'); }
@@ -1326,17 +1437,26 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
         if (!v || typeof v !== 'object') return;
         var m = Number(v.m);
         if (!(m > 0) || typeof v.f !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v.f)) return;
-        var t = v.t === 'i' || v.t === 'a' ? v.t : 'g';
-        var c = cm[v.c] && cm[v.c].t === t ? v.c : '_none-' + t;
-        movs.push({ id: id, k: k, t: t, m: round2(m), f: v.f, c: c, p: v.p || '', d: v.d || '', ts: Number(v.ts) || 0, e: v.e ? 1 : 0 });
+        var t = v.t === 'i' || v.t === 'a' || v.t === 'p' ? v.t : 'g';
+        if (t === 'p' && !v.tj) return;
+        var c = t === 'p' ? '' : cm[v.c] && cm[v.c].t === t ? v.c : '_none-' + t;
+        movs.push({ id: id, k: k, t: t, m: round2(m), f: v.f, c: c, p: v.p || '', d: v.d || '', ts: Number(v.ts) || 0, e: v.e ? 1 : 0, tj: v.tj || '' });
       });
     });
     movs.sort(function (a, b) { return a.f < b.f ? 1 : a.f > b.f ? -1 : b.ts - a.ts; });
     var agg = {}, catUse = {}, metUse = {}, first = null, ej = 0, totAho = 0;
     movs.forEach(function (mv) {
       var k = mv.f.slice(0, 7);
-      var a = agg[k] || (agg[k] = { ing: 0, gas: 0, aho: 0, n: 0, byCat: {}, byCatN: {}, byMet: {}, day: {}, gasAh: 0, ingAh: 0 });
+      var a = agg[k] || (agg[k] = { ing: 0, gas: 0, aho: 0, n: 0, byCat: {}, byCatN: {}, byMet: {}, day: {}, gasAh: 0, ingAh: 0, pag: 0 });
       a.n++;
+      if (mv.t === 'p') {
+        a.pag += mv.m;
+        if (mv.p) metUse[mv.p] = (metUse[mv.p] || 0) + 1;
+        metUse[mv.tj] = (metUse[mv.tj] || 0) + 1;
+        if (!first || mv.f < first) first = mv.f;
+        if (mv.e) ej++;
+        return;
+      }
       a.byCat[mv.c] = (a.byCat[mv.c] || 0) + mv.m;
       a.byCatN[mv.c] = (a.byCatN[mv.c] || 0) + 1;
       var fromAh = isAhMet(mv.p);
@@ -1358,6 +1478,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     var res = { movs: movs, agg: agg, months: Object.keys(agg).sort(), first: first, ej: ej, catUse: catUse, metUse: metUse, totAho: totAho };
     res.pred = predict(res);
     res.sav = ahorroSaldo(res);
+    res.tj = tarjetasData(res);
     return res;
   }
 
@@ -1435,8 +1556,8 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   /* ============ DOM ============ */
   function $(s, el) { return (el || document).querySelector(s); }
   function $$(s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); }
-  var VIEWS = ['resumen', 'movimientos', 'analisis', 'categorias'];
-  var ui = { tab: 'resumen', mes: curKey(), q: '', ftipo: '', fcat: '', fmet: '', ftodo: false, recorte: null, mview: 'grafica', rview: 'grafica', editCat: null, editMet: null, editSaldo: false, movLimit: 300 };
+  var VIEWS = ['resumen', 'movimientos', 'tarjetas', 'analisis', 'categorias'];
+  var ui = { tab: 'resumen', mes: curKey(), q: '', ftipo: '', fcat: '', fmet: '', ftodo: false, recorte: null, mview: 'grafica', rview: 'grafica', editCat: null, editMet: null, editSaldo: false, editCard: null, movLimit: 300 };
   var A = analyze();
 
   /* ============ Almacenamiento ============ */
@@ -1476,7 +1597,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     var m = D.meses[k];
     return !!(m && m.movs && Object.keys(m.movs).some(function (id) { return !!m.movs[id]; }));
   }
-  function movBody(m) { return { t: m.t, m: round2(m.m), f: m.f, c: m.c, p: m.p || '', d: m.d || '', ts: m.ts || Date.now(), e: m.e ? 1 : 0 }; }
+  function movBody(m) { var b = { t: m.t, m: round2(m.m), f: m.f, c: m.c || '', p: m.p || '', d: m.d || '', ts: m.ts || Date.now(), e: m.e ? 1 : 0 }; if (m.t === 'p') b.tj = m.tj; return b; }
   function catBody(c) { return { n: c.n, t: c.t, k: c.t === 'g' ? (c.k || 'n') : '', lim: c.lim > 0 ? round2(c.lim) : null, ord: c.ord || 0 }; }
 
   function commit(apply, writes) {
@@ -1612,7 +1733,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     var patch = {};
     if (newCat) { patch.cats = {}; patch.cats[newCat.id] = catBody(newCat); }
     if (newMet) { patch.mets = {}; patch.mets[newMet.id] = { n: newMet.n, ord: newMet.ord }; }
-    if (mov.p && (cfg().prefs || {}).ultMet !== mov.p) patch.prefs = { ultMet: mov.p };
+    if (mov.t !== 'p' && mov.p && (cfg().prefs || {}).ultMet !== mov.p) patch.prefs = { ultMet: mov.p };
     var hasCfg = Object.keys(patch).length > 0;
     commit(function (D) {
       if (hasCfg) {
@@ -1662,6 +1783,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   }
   function opPutMet(m) {
     var body = { n: m.n, ord: m.ord || 0, ah: m.ah ? 1 : 0 };
+    if (m.card) { body.card = 1; body.tipo = m.tipo === 'd' ? 'd' : 'c'; body.cat = m.cat || ''; body.tasa = m.tasa > 0 ? m.tasa : null; body.lim = m.lim > 0 ? round2(m.lim) : null; body.d0 = round2(m.d0 || 0); body.f0 = m.f0 || ''; }
     commit(function (D) { ensureConfig(D).mets[m.id] = clone(body); }, function () {
       var p = { mets: {} }; p.mets[m.id] = body; return [wConfig(p)];
     });
@@ -1669,6 +1791,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   function opDelMet(id, moveTo) {
     var byMonth = {};
     A.movs.forEach(function (m) {
+      if (m.t === 'p' && m.tj === id) { (byMonth[m.k] = byMonth[m.k] || {})[m.id] = null; return; }
       if (m.p !== id) return;
       (byMonth[m.k] = byMonth[m.k] || {})[m.id] = movBody(Object.assign({}, m, { p: moveTo || '' }));
     });
@@ -1757,6 +1880,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     if (ui.tab === 'resumen') renderResumen();
     else if (ui.tab === 'movimientos') renderMovs();
     else if (ui.tab === 'analisis') renderAnalisis();
+    else if (ui.tab === 'tarjetas') renderTarjetas();
     else renderCats(false);
     if ($('#dlg-mov').open) { renderCatChips(); renderMetChips(); }
     $('#dm-save').disabled = !ready;
@@ -2041,6 +2165,16 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     return h;
   }
   function movRowHTML(m, withDate) {
+    if (m.t === 'p') {
+      var ps = [];
+      if (withDate) ps.push(fechaCorta(m.f));
+      ps.push(metName(m.tj));
+      if (m.p) ps.push('desde ' + metName(m.p));
+      if (m.d) ps.push(m.d);
+      return '<button class="mov" type="button" data-act="edit" data-id="' + esc(m.id) + '" aria-label="' + esc('Pago de ' + money(m.m) + ' a ' + metName(m.tj) + '. Editar') + '">' +
+        '<i class="dot dot-p" aria-hidden="true"></i><span class="mov-main"><span class="mov-cat">Pago de tarjeta</span><span class="mov-sub">' + esc(ps.join(' · ')) + '</span></span>' +
+        '<span class="mov-amt p">' + money(m.m) + '</span></button>';
+    }
     var c = catInfo(m.c) || { n: 'Sin categoría' };
     var sub = [];
     if (withDate) sub.push(fechaCorta(m.f));
@@ -2294,6 +2428,181 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       '<tfoot><tr><th scope="row">Total</th><td>' + money(tI) + '</td><td>' + money(tG) + '</td><td>' + money(tA) + '</td><td class="' + (tq < 0 ? 'neg' : '') + '">' + moneyAcct(tq) + '</td><td>' + (tI > 0 ? pctS(tA / tI) : '—') + '</td></tr></tfoot></table></div>';
   }
 
+  /* ---- Tarjetas ---- */
+  function prevAvg(s, k) {
+    var ks = [1, 2, 3].map(function (i) { return addMonths(k, -i); }).filter(function (x) { return s.first && x >= s.first.slice(0, 7); });
+    if (!ks.length) return 0;
+    return sum(ks.map(function (x) { return (s.mes[x] || {}).g || 0; })) / ks.length;
+  }
+  function utilPill(u) {
+    if (u == null) return '';
+    if (u >= 0.9) return '<span class="pill bad">! Casi al límite</span>';
+    if (u >= 0.7) return '<span class="pill warn">! Uso alto</span>';
+    return '<span class="pill ok">✓ Uso sano</span>';
+  }
+  function renderTarjetas() {
+    var T = A.tj, k = ui.mes, credit = T.list.filter(function (s) { return s.c.tipo === 'c'; });
+    var h = cardH('Tus tarjetas', T.list.length ? 'Lo que gastaste y pagaste en ' + esc(mesN(k)) + ', y cuánto debes hoy.' : '');
+    if (!T.list.length) {
+      h += '<p class="empty">Agrega tus tarjetas para saber cuánto gastas con cada una, cuánto has pagado y cuánto debes. Después, al registrar un gasto, eliges con cuál pagaste.</p>';
+    } else {
+      var gm = sum(T.list.map(function (s) { return (s.mes[k] || {}).g || 0; })), pm = sum(T.list.map(function (s) { return (s.mes[k] || {}).pg || 0; }));
+      var deuda = sum(credit.map(function (s) { return s.deuda; })), inte = sum(credit.map(function (s) { return s.interes; }));
+      h += '<div class="tj-sum">' +
+        (credit.length ? '<div class="stat"><div class="lab">Deuda total</div><div class="val">' + money(deuda) + '</div></div>' : '') +
+        '<div class="stat"><div class="lab">Gastado en ' + esc(mesN(k)) + '</div><div class="val">' + money(gm) + '</div></div>' +
+        '<div class="stat"><div class="lab">Pagado en ' + esc(mesN(k)) + '</div><div class="val">' + money(pm) + '</div></div>' +
+        (inte > 0 ? '<div class="stat"><div class="lab">Interés si no pagas</div><div class="val">≈ ' + money(inte) + '/mes</div></div>' : '') + '</div>';
+      var used = T.list.filter(function (s) { return ((s.mes[k] || {}).g || 0) > 0; }).sort(function (a, b) { return b.mes[k].g - a.mes[k].g; });
+      if (used.length) {
+        var top = used[0];
+        h += '<p class="tj-top">En ' + esc(mesN(k)) + ' usaste más <b>' + esc(top.c.n) + '</b>: ' + money(top.mes[k].g) + (gm > 0 && used.length > 1 ? ' (' + pctS(top.mes[k].g / gm) + ' de lo gastado con tarjeta).' : '.') + '</p>';
+        var max = top.mes[k].g;
+        h += '<div class="cbars">' + used.map(function (s) {
+          var g = s.mes[k].g, av = prevAvg(s, k), meta = '<span>' + pctS(gm ? g / gm : 0) + ' del gasto con tarjeta</span>';
+          if (av > 0 && g > av * 1.15 && g - av >= 5) meta += '<span class="pill warn">↑ ' + pctS(g / av - 1) + '</span><span>promedio ' + moneyR(av) + '</span>';
+          return '<div class="cbar"><div class="cbar-top"><span class="cbar-name">' + esc(s.c.n) + '</span><span class="cbar-val">' + money(g) + '</span></div><div class="cbar-track"><span class="cbar-fill" style="width:' + (g / max * 100).toFixed(2) + '%"></span></div><div class="cbar-meta">' + meta + '</div></div>';
+        }).join('') + '</div>';
+      } else h += '<p class="fine">Sin gastos con tarjeta en ' + esc(mesN(k)) + '.</p>';
+      if (credit.length) h += '<div class="card-foot"><button class="btn btn-sm" type="button" data-act="pago">Registrar pago de tarjeta</button></div>';
+    }
+    $('#t-resumen').innerHTML = h;
+    $('#t-list').innerHTML = T.list.map(tileHTML).join('');
+    $('#t-list').hidden = !T.list.length;
+    $('#t-hist').innerHTML = cardH('Historial de tarjetas', 'Cuánto gastaste y pagaste con tus tarjetas cada mes.') + tjHistHTML();
+    $('#t-hist').hidden = !T.list.length;
+    syncCardForm();
+  }
+  function tileHTML(s) {
+    var c = s.c, k = ui.mes, r = s.mes[k] || { g: 0, pg: 0 }, av = prevAvg(s, k);
+    var h = '<article class="tj"><div class="tj-h"><div class="tj-name"><span class="tj-n">' + esc(c.n) + '</span><span class="pill neutral">' + (c.tipo === 'c' ? 'Crédito' : 'Débito') + '</span>' + (c.cat ? '<span class="pill neutral">' + esc(c.cat) + '</span>' : '') + '</div>' +
+      '<button class="link" type="button" data-act="card-edit" data-id="' + esc(c.id) + '">Editar</button></div>';
+    if (c.tipo === 'c') {
+      h += '<div class="tj-lab">' + (s.deuda < 0 ? 'Saldo a tu favor' : 'Deuda actual') + '</div><div class="tj-big">' + money(Math.abs(s.deuda)) + '</div>';
+      if (c.lim) {
+        var u = s.util;
+        h += '<div class="cbar-track tj-meter"><span class="cbar-fill" style="width:' + Math.min(100, u * 100).toFixed(1) + '%"></span></div>' +
+          '<div class="cbar-meta"><span>Disponible ' + money(Math.max(0, c.lim - Math.max(0, s.deuda))) + ' de ' + moneyR(c.lim) + ' · ' + pctS(u) + ' usado</span>' + utilPill(u) + '</div>';
+      }
+      if (c.tasa) h += '<p class="fine">Tasa ' + String(c.tasa).replace(/\.0+$/, '') + '% anual' + (s.interes > 0 ? ' · si no pagas, ≈ ' + money(s.interes) + ' de interés al mes.' : '.') + '</p>';
+    } else {
+      h += '<div class="tj-lab">Gastado en ' + esc(mesN(k)) + '</div><div class="tj-big">' + money(r.g) + '</div>';
+    }
+    h += '<dl class="tj-stats">' +
+      (c.tipo === 'c' ? '<div><dt>Gastado en ' + esc(mesN(k)) + '</dt><dd>' + money(r.g) + '</dd></div><div><dt>Pagado en ' + esc(mesN(k)) + '</dt><dd>' + money(r.pg) + '</dd></div>' : '<div><dt>Movimientos</dt><dd>' + s.n + '</dd></div>') +
+      '<div><dt>Gastado en total</dt><dd>' + money(s.gasTot) + '</dd></div>' + (c.tipo === 'c' ? '<div><dt>Pagado en total</dt><dd>' + money(s.pagTot) + '</dd></div>' : '') + '</dl>';
+    if (av > 0 && r.g > av * 1.15 && r.g - av >= 5) h += '<div class="alert"><span class="pill warn">↑ ' + pctS(r.g / av - 1) + '</span><span>Este mes gastas más de lo normal con esta tarjeta (promedio ' + moneyR(av) + ').</span></div>';
+    h += '<div class="btn-row tj-actions">' + (c.tipo === 'c' ? '<button class="btn btn-primary btn-sm" type="button" data-act="pago" data-id="' + esc(c.id) + '">Registrar pago</button>' : '') +
+      '<button class="btn btn-sm" type="button" data-act="card-movs" data-id="' + esc(c.id) + '">Ver movimientos</button></div>';
+    return h + '</article>';
+  }
+  function tjHistHTML() {
+    var T = A.tj, firsts = T.list.map(function (s) { return s.first ? s.first.slice(0, 7) : null; }).filter(Boolean);
+    if (!firsts.length) return '<p class="empty">Cuando uses tus tarjetas, aquí verás cada mes.</p>';
+    var start = firsts.sort()[0], cur = curKey(), ks = [];
+    for (var k = start; k <= cur; k = addMonths(k, 1)) ks.push(k);
+    var hasC = T.list.some(function (s) { return s.c.tipo === 'c'; });
+    var rows = ks.reverse().slice(0, 12).map(function (k) {
+      var g = 0, pg = 0, dm = 0;
+      T.list.forEach(function (s) { var r = s.mes[k]; if (r) { g += r.g; pg += r.pg; } });
+      var top = T.list.filter(function (s) { return (s.mes[k] || {}).g > 0; }).sort(function (a, b) { return b.mes[k].g - a.mes[k].g; })[0];
+      return '<tr class="' + (k === ui.mes ? 'sel' : '') + '"><th scope="row"><button class="row-btn" type="button" data-act="mes" data-k="' + k + '">' + esc(mesL(k)) + '</button></th><td>' + money(g) + '</td>' + (hasC ? '<td>' + money(pg) + '</td>' : '') + '<td style="text-align:left">' + (top ? esc(top.c.n) : '—') + '</td></tr>';
+    }).join('');
+    return '<div class="table-wrap"><table class="ledger-t" style="min-width:420px"><thead><tr><th scope="col">Mes</th><th scope="col">Gastado</th>' + (hasC ? '<th scope="col">Pagado</th>' : '') + '<th scope="col" style="text-align:left">La que más usaste</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+  function syncCardForm() {
+    var ed = ui.editCard ? metList().filter(function (x) { return x.id === ui.editCard && x.card; })[0] : null;
+    if (ui.editCard && !ed) ui.editCard = null;
+    var f = $('#tj-form');
+    if (f.getAttribute('data-for') === (ed ? ed.id : '')) return;
+    f.setAttribute('data-for', ed ? ed.id : '');
+    $('#tj-title').textContent = ed ? 'Editar ' + ed.n : 'Agregar tarjeta';
+    $('#tj-n').value = ed ? ed.n : '';
+    $('#tj-t-' + (ed ? ed.tipo : 'c')).checked = true;
+    $('#tj-cat').value = ed ? ed.cat : '';
+    $('#tj-tasa').value = ed && ed.tasa ? ed.tasa : '';
+    $('#tj-lim').value = ed && ed.lim ? ed.lim : '';
+    var st = ed ? A.tj.by[ed.id] : null;
+    $('#tj-deuda').value = st ? st.deuda.toFixed(2) : '';
+    $('#tj-deuda').setAttribute('data-orig', st ? st.deuda.toFixed(2) : '');
+    $('#tj-save').textContent = ed ? 'Guardar cambios' : 'Agregar tarjeta';
+    $('#tj-cancel').hidden = !ed; $('#tj-del').hidden = !ed;
+    $('#tj-err').textContent = '';
+    $('#tj-credit').hidden = !$('#tj-t-c').checked;
+  }
+  function saveCard(e) {
+    e.preventDefault();
+    var err = $('#tj-err'), n = $('#tj-n').value.trim(), tipo = $('#tj-t-d').checked ? 'd' : 'c', ed = ui.editCard ? metList().filter(function (x) { return x.id === ui.editCard; })[0] : null;
+    if (!n) { err.textContent = 'Ponle un nombre a la tarjeta, por ejemplo «Visa BAC».'; $('#tj-n').focus(); return; }
+    if (metList().some(function (x) { return (!ed || x.id !== ed.id) && norm(x.n) === norm(n); })) { err.textContent = 'Ya tienes un método o tarjeta llamado «' + n + '».'; return; }
+    var tasa = null, lim = null, d0 = 0, f0 = ed ? ed.f0 : iso(new Date());
+    if (tipo === 'c') {
+      var tt = $('#tj-tasa').value.trim().replace('%', '').replace(',', '.');
+      if (tt) { tasa = parseFloat(tt); if (!(tasa > 0 && tasa < 400)) { err.textContent = 'La tasa debe ser un porcentaje anual, por ejemplo 36. O déjala vacía.'; return; } }
+      var lt = $('#tj-lim').value.trim();
+      if (lt) { lim = parseMonto(lt); if (!(lim > 0)) { err.textContent = 'El límite debe ser mayor que cero, o déjalo vacío.'; return; } }
+      var dt = $('#tj-deuda').value.trim(), orig = $('#tj-deuda').getAttribute('data-orig');
+      if (ed && dt === orig) d0 = ed.d0;
+      else {
+        d0 = dt ? parseMonto(dt) : 0;
+        if (!isFinite(d0)) { err.textContent = 'Revisa lo que debes hoy.'; return; }
+        /* Tarjeta nueva: cuenta desde hoy. Al corregir la deuda: ya incluye lo de hoy, cuenta desde mañana. */
+        f0 = ed ? iso(new Date(Date.now() + 864e5)) : iso(new Date());
+      }
+    }
+    if (!ready) { err.textContent = 'Conectando con tu libreta… intenta en un momento.'; return; }
+    var card = { id: ed ? ed.id : uid('p-'), n: cap(n), ord: ed ? ed.ord : nextMetOrd(), ah: 0, card: 1, tipo: tipo, cat: cap($('#tj-cat').value.trim()), tasa: tasa, lim: lim, d0: d0, f0: f0 };
+    opPutMet(card);
+    ui.editCard = null;
+    $('#tj-form').setAttribute('data-for', 'x');
+    toast(ed ? 'Tarjeta actualizada.' : 'Tarjeta agregada: ' + card.n + '. Ya aparece al elegir cómo pagaste.');
+  }
+
+  /* ---- Pago de tarjeta ---- */
+  var PG = { edit: null };
+  function openPago(cardId, edit) {
+    var cards = metList().filter(function (x) { return x.card; });
+    if (!cards.length) { toast('Primero agrega una tarjeta.'); return; }
+    PG.edit = edit || null;
+    var sel = $('#pg-tj');
+    sel.innerHTML = cards.sort(function (a, b) { return (a.tipo === 'c' ? 0 : 1) - (b.tipo === 'c' ? 0 : 1); }).map(function (c) { return '<option value="' + esc(c.id) + '">' + esc(c.n) + (c.tipo === 'd' ? ' (débito)' : '') + '</option>'; }).join('');
+    sel.value = cardId && metMap()[cardId] ? cardId : cards[0].id;
+    var src = metList().filter(function (x) { return !x.card; });
+    $('#pg-desde').innerHTML = '<option value="">Sin especificar</option>' + src.map(function (m) { return '<option value="' + esc(m.id) + '">' + esc(m.n) + '</option>'; }).join('');
+    $('#pg-desde').value = edit && edit.p && metMap()[edit.p] ? edit.p : '';
+    $('#pg-monto').value = edit ? edit.m.toFixed(2) : '';
+    $('#pg-fecha').value = edit ? edit.f : iso(new Date());
+    $('#pg-nota').value = edit ? edit.d : '';
+    $('#pg-err').textContent = '';
+    $('#pg-title').textContent = edit ? 'Editar pago de tarjeta' : 'Pago de tarjeta';
+    $('#pg-del').hidden = !edit;
+    pagoHint();
+    showDlg($('#dlg-pago'));
+    if (!edit) setTimeout(function () { $('#pg-monto').focus(); }, 60);
+  }
+  function pagoHint() {
+    var st = A.tj.by[$('#pg-tj').value], el = $('#pg-hint');
+    if (st && st.c.tipo === 'c' && st.deuda > 0) {
+      el.innerHTML = 'Debes <b>' + money(st.deuda) + '</b> en esta tarjeta. <button class="link" type="button" data-act="pg-todo">Pagar todo</button>';
+      el.hidden = false;
+    } else el.hidden = true;
+    var d = $('#pg-desde').value;
+    $('#pg-ah').hidden = !isAhMet(d);
+  }
+  function savePago(e) {
+    e.preventDefault();
+    var err = $('#pg-err'), m = parseMonto($('#pg-monto').value), f = $('#pg-fecha').value || iso(new Date()), tj = $('#pg-tj').value;
+    if (!(m > 0)) { err.textContent = 'Escribe cuánto pagaste.'; $('#pg-monto').focus(); return; }
+    if (!ready) { err.textContent = 'Conectando con tu libreta… intenta en un momento.'; return; }
+    var old = PG.edit;
+    var mov = { id: old ? old.id : uid('m'), t: 'p', m: m, f: f, c: '', p: $('#pg-desde').value, d: $('#pg-nota').value.trim(), tj: tj, ts: old ? old.ts : Date.now(), e: 0 };
+    opSaveMov(mov, old, null, null);
+    closeDlg($('#dlg-pago'));
+    var st = tarjetasData(analyze()).by[tj];
+    var saved = Object.assign({ k: f.slice(0, 7) }, mov);
+    toast('Pago de ' + money(m) + ' registrado.' + (st && st.c.tipo === 'c' ? ' Deuda de ' + st.c.n + ': ' + money(st.deuda) + '.' : ''), old ? null : { label: 'Deshacer', fn: function () { opDelMov(saved); } });
+  }
+
   /* ---- Movimientos ---- */
   function fillSelect(sel, opts, val) {
     var sig = JSON.stringify(opts);
@@ -2369,7 +2678,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     var m = '';
     metList().forEach(function (x) {
       var uses = A.metUse[x.id] || 0, open = ui.editMet === x.id;
-      m += '<button class="cat-row" type="button" data-act="met-edit" data-id="' + esc(x.id) + '" aria-expanded="' + open + '"><span><span class="nm">' + esc(x.n) + '</span><span class="meta">' + (x.ah ? 'Sale de tus ahorros · ' : '') + (uses ? uses + (uses === 1 ? ' uso' : ' usos') : 'sin usar') + '</span></span><span></span>' + chevron + '</button>';
+      m += '<button class="cat-row" type="button" data-act="met-edit" data-id="' + esc(x.id) + '" aria-expanded="' + open + '"><span><span class="nm">' + esc(x.n) + '</span><span class="meta">' + (x.card ? (x.tipo === 'c' ? 'Tarjeta de crédito · ' : 'Tarjeta de débito · ') : '') + (x.ah ? 'Sale de tus ahorros · ' : '') + (uses ? uses + (uses === 1 ? ' uso' : ' usos') : 'sin usar') + '</span></span><span></span>' + chevron + '</button>';
       if (open) m += '<form class="cat-edit" id="me-form" data-id="' + esc(x.id) + '" novalidate><div class="field"><label for="me-n">Nombre</label><input class="input" id="me-n" value="' + esc(x.n) + '" autocomplete="off"></div><label class="check" for="me-ah"><input type="checkbox" id="me-ah"' + (x.ah ? ' checked' : '') + '>Sale de mis ahorros</label><p class="form-error" id="me-err" role="alert"></p><div class="btn-row"><button class="btn btn-primary btn-sm" type="submit">Guardar</button><button class="btn btn-sm" type="button" data-act="met-close">Cancelar</button><span style="flex:1"></span><button class="btn btn-danger btn-sm" type="button" data-act="met-del" data-id="' + esc(x.id) + '">Eliminar</button></div></form>';
     });
     mh.innerHTML = m || '<p class="empty">Sin métodos. Agrega el primero arriba.</p>';
@@ -2482,9 +2791,20 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       return '<button type="button" class="chip' + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-act="met-pick" data-id="' + esc(m.id) + '">' + esc(m.n) + '</button>';
     }).join('');
     $('#dm-met-chips').innerHTML = h;
-    var hint = $('#dm-met-hint'), pick = exact && exact.ah ? exact : null;
-    hint.hidden = !pick;
-    if (pick) hint.textContent = F.tipo === 'g' ? 'Este gasto se restará de tus ahorros.' : 'Esto se sumará a tus ahorros.';
+    var hint = $('#dm-met-hint'), msg = '';
+    if (exact && exact.ah) msg = F.tipo === 'g' ? 'Este gasto se restará de tus ahorros.' : 'Esto se sumará a tus ahorros.';
+    else if (exact && exact.card && exact.tipo === 'c' && F.tipo === 'g') { var st = A.tj.by[exact.id]; msg = 'Se sumará a la deuda de ' + exact.n + (st ? ' (hoy debes ' + money(st.deuda) + ').' : '.'); }
+    hint.hidden = !msg;
+    hint.textContent = msg;
+    var row = $('#dm-card-row'), cards = list.filter(function (m) { return m.card; });
+    var generic = exact && !exact.card && /^tarjeta/.test(norm(exact.n)) && cards.length;
+    if (generic) {
+      var nn = norm(exact.n), want = nn.indexOf('credito') >= 0 ? 'c' : nn.indexOf('debito') >= 0 ? 'd' : '';
+      var fl = cards.filter(function (m) { return !want || m.tipo === want; });
+      if (!fl.length) fl = cards;
+      row.innerHTML = '<span class="lbl">¿Cuál tarjeta?</span><div class="chips">' + fl.map(function (m) { return '<button type="button" class="chip" data-act="met-pick" data-id="' + esc(m.id) + '">' + esc(m.n) + '</button>'; }).join('') + '</div>';
+    }
+    row.hidden = !generic;
   }
   function fillDescList() {
     var cnt = {}, disp = {};
@@ -2518,6 +2838,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   function openEdit(id) {
     var m = A.movs.filter(function (x) { return x.id === id; })[0];
     if (!m) return;
+    if (m.t === 'p') { openPago(m.tj, m); return; }
     F.edit = m; F.catTouched = true; F.metTouched = true;
     $('#f-mov').reset();
     $('#dm-monto').value = m.m.toFixed(2);
@@ -2563,6 +2884,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     } else {
       var saved = Object.assign({ k: fecha.slice(0, 7) }, mov);
       var extraAh = '';
+      if (met && met.card && met.tipo === 'c' && t === 'g') { var T2 = tarjetasData(analyze()).by[met.id]; if (T2) extraAh += ' Deuda de ' + met.n + ': ' + money(T2.deuda) + '.'; }
       if (met && met.ah && t !== 'a') { var S2 = ahorroSaldo(analyze()); if (S2) extraAh = ' Tus ahorros ' + (t === 'g' ? 'bajaron' : 'subieron') + ' a ' + money(S2.saldo) + '.'; }
       else if (t === 'a') { var S3 = ahorroSaldo(analyze()); if (S3) extraAh = ' Ahorros: ' + money(S3.saldo) + '.'; }
       toast((newCat ? 'Nueva categoría «' + cat.n + '». ' : '') + nm + ' guardado: ' + money(monto) + '.' + extraAh, { label: 'Deshacer', fn: function () { opDelMov(saved); } });
@@ -2624,7 +2946,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     var lines = ['fecha,tipo,categoria,metodo,descripcion,monto'];
     A.movs.slice().sort(function (a, b) { return a.f < b.f ? -1 : a.f > b.f ? 1 : a.ts - b.ts; }).forEach(function (m) {
       var c = catInfo(m.c);
-      lines.push([m.f, TIPO[m.t].toLowerCase(), c ? c.n : '', m.p ? metName(m.p) : '', m.d, m.m.toFixed(2)].map(q).join(','));
+      lines.push([m.f, TIPO[m.t].toLowerCase(), m.t === 'p' ? metName(m.tj) : c ? c.n : '', m.p ? metName(m.p) : '', m.d, m.m.toFixed(2)].map(q).join(','));
     });
     return lines.join('\n');
   }
@@ -2680,7 +3002,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     var iF = idx(['fecha', 'date']), iT = idx(['tipo', 'type']), iC = idx(['categoria', 'category']), iP = idx(['metodo', 'metodo de pago', 'method', 'payment method']), iD = idx(['descripcion', 'description', 'detalle', 'concepto']), iM = idx(['monto', 'amount', 'cantidad', 'valor', 'importe']);
     if (iF < 0 || iM < 0 || iC < 0) { toast('El CSV necesita al menos las columnas fecha, categoría y monto.'); return; }
     var seen = {};
-    A.movs.forEach(function (m) { var c = catInfo(m.c); seen[movKey(m.f, m.t, c ? c.n : '', m.m, m.d)] = 1; });
+    A.movs.forEach(function (m) { var c = catInfo(m.c); seen[movKey(m.f, m.t, m.t === 'p' ? metName(m.tj) : c ? c.n : '', m.m, m.d)] = 1; });
     var catsNew = {}, metsNew = {}, movs = [], dup = 0, bad = 0, ord = nextOrd(), mord = nextMetOrd();
     function findCat(n, t) {
       var q = norm(n), c = catList(t).filter(function (x) { return norm(x.n) === q; })[0];
@@ -2699,13 +3021,14 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     }
     rows.slice(1).forEach(function (r, n) {
       var f = parseFecha(r[iF]), m = Math.abs(parseMonto(r[iM])), tt = norm(iT >= 0 ? r[iT] : 'gasto');
-      var t = tt.indexOf('ing') === 0 || tt.indexOf('inc') === 0 ? 'i' : tt.indexOf('aho') === 0 || tt.indexOf('sav') === 0 ? 'a' : 'g';
+      var t = tt.indexOf('pago de tarjeta') === 0 ? 'p' : tt.indexOf('ing') === 0 || tt.indexOf('inc') === 0 ? 'i' : tt.indexOf('aho') === 0 || tt.indexOf('sav') === 0 ? 'a' : 'g';
       var cn = String(r[iC] || '').trim(), d = iD >= 0 ? String(r[iD] || '').trim() : '';
       if (!f || !(m > 0) || !cn) { bad++; return; }
       var key = movKey(f, t, cn, m, d);
       if (seen[key]) { dup++; return; }
       seen[key] = 1;
-      movs.push({ id: uid('m'), t: t, m: round2(m), f: f, c: findCat(cn, t), p: iP >= 0 ? findMet(r[iP]) : '', d: d, ts: Date.now() + n, e: 0 });
+      if (t === 'p') movs.push({ id: uid('m'), t: 'p', m: round2(m), f: f, c: '', tj: findMet(cn), p: iP >= 0 ? findMet(r[iP]) : '', d: d, ts: Date.now() + n, e: 0 });
+      else movs.push({ id: uid('m'), t: t, m: round2(m), f: f, c: findCat(cn, t), p: iP >= 0 ? findMet(r[iP]) : '', d: d, ts: Date.now() + n, e: 0 });
     });
     if (!movs.length) { toast(dup ? 'Todo ya estaba en tu libreta (' + dup + ' repetidos).' : 'No encontré movimientos válidos en el archivo.'); return; }
     opImport(movs, Object.keys(catsNew).map(function (k) { return catsNew[k]; }), Object.keys(metsNew).map(function (k) { return metsNew[k]; }));
@@ -2783,6 +3106,14 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
           break;
         case 'met-close': ui.editMet = null; renderCats(true); break;
         case 'met-del': delMet(id); break;
+        case 'pago': openPago(id, null); break;
+        case 'pg-todo': { var stt = A.tj.by[$('#pg-tj').value]; if (stt) $('#pg-monto').value = stt.deuda.toFixed(2); break; }
+        case 'close-pago': closeDlg($('#dlg-pago')); break;
+        case 'del-pago': if (PG.edit) { var pe = PG.edit; closeDlg($('#dlg-pago')); opDelMov(pe); toast('Pago eliminado.', { label: 'Deshacer', fn: function () { opSaveMov(Object.assign({}, pe), null, null, null); } }); } break;
+        case 'card-edit': ui.editCard = id; syncCardForm(); var tf = $('#t-form'); if (tf) tf.scrollIntoView({ block: 'start' }); setTimeout(function () { $('#tj-n').focus(); }, 50); break;
+        case 'card-cancel': ui.editCard = null; syncCardForm(); break;
+        case 'card-del': if (ui.editCard) { var cid = ui.editCard; ui.editCard = null; syncCardForm(); delMet(cid); } break;
+        case 'card-movs': ui.fmet = id; ui.ftodo = true; ui.ftipo = ''; ui.fcat = ''; ui.q = ''; $('#f-q').value = ''; setTab('movimientos'); break;
         case 'sa-edit': ui.editSaldo = true; renderSaldoCard(true); var sm = $('#sa-monto'); if (sm) sm.focus(); break;
         case 'sa-cancel': ui.editSaldo = false; renderSaldoCard(true); break;
       }
@@ -2850,6 +3181,11 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       toast('Categoría creada: ' + c.n + '.');
     });
     $$('input[name="cn-t"]').forEach(function (r) { r.addEventListener('change', function () { $('#cn-k').hidden = !$('#cn-t-g').checked; }); });
+    $('#tj-form').addEventListener('submit', saveCard);
+    $$('input[name="tj-t"]').forEach(function (r) { r.addEventListener('change', function () { $('#tj-credit').hidden = !$('#tj-t-c').checked; }); });
+    $('#f-pago').addEventListener('submit', savePago);
+    $('#pg-tj').addEventListener('change', pagoHint);
+    $('#pg-desde').addEventListener('change', pagoHint);
     $('#r-saldo').addEventListener('submit', function (e) {
       e.preventDefault();
       var v = parseMonto($('#sa-monto').value), d = $('#sa-fecha').value, err = $('#sa-err');
@@ -2902,7 +3238,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       if (!n) { err.textContent = 'El nombre no puede quedar vacío.'; return; }
       if (metList().some(function (x) { return x.id !== id && norm(x.n) === norm(n); })) { err.textContent = 'Ya existe otro método con ese nombre.'; return; }
       if (!ready) { err.textContent = 'Conectando con tu libreta… intenta en un momento.'; return; }
-      opPutMet({ id: id, n: cap(n), ord: m.ord || 0, ah: $('#me-ah').checked ? 1 : 0 });
+      opPutMet(Object.assign({}, metList().filter(function (x) { return x.id === id; })[0], { n: cap(n), ah: $('#me-ah').checked ? 1 : 0 }));
       ui.editMet = null;
       renderCats(true);
       toast('Método actualizado.');
@@ -2973,11 +3309,11 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   function delMet(id) {
     var m = metMap()[id];
     if (!m) return;
-    var uses = A.metUse[id] || 0, others = metList().filter(function (x) { return x.id !== id; });
+    var uses = A.movs.filter(function (x) { return x.t !== 'p' && x.p === id; }).length, others = metList().filter(function (x) { return x.id !== id; });
     var extra = uses > 0 ? '<div class="field"><label for="cf-move">Pasar sus ' + uses + (uses === 1 ? ' movimiento' : ' movimientos') + ' a</label><select class="input" id="cf-move">' + others.map(function (o) { return '<option value="' + esc(o.id) + '">' + esc(o.n) + '</option>'; }).join('') + '<option value="">Sin método</option></select></div>' : '';
     confirmar({
       titulo: 'Eliminar «' + m.n + '»',
-      texto: uses > 0 ? 'Este método se usa en ' + uses + (uses === 1 ? ' movimiento' : ' movimientos') + '. Elige con cuál reemplazarlo.' : 'No se usa en ningún movimiento.',
+      texto: (uses > 0 ? 'Este método se usa en ' + uses + (uses === 1 ? ' movimiento' : ' movimientos') + '. Elige con cuál reemplazarlo.' : 'No se usa en ningún movimiento.') + (m.card ? ' Los pagos registrados a esta tarjeta se borrarán.' : ''),
       ok: 'Eliminar', peligro: true, extra: extra,
       read: function () { var s = $('#cf-move'); return s ? s.value : ''; }
     }).then(function (r) {

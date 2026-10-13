@@ -428,6 +428,22 @@ p { margin: 0; }
 .alert { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--ink-2); padding: 10px 12px; border-radius: 10px; background: var(--sheet-2); }
 .alert b { color: var(--ink); }
 
+/* Ahorros */
+.sa-big { font-size: 34px; font-weight: 750; font-stretch: 106%; letter-spacing: -.02em; line-height: 1.1; margin: 2px 0 4px; overflow-wrap: anywhere; }
+.card-sub b { color: var(--ink); }
+.sa-mes { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.sa-mes-t { font-weight: 700; font-size: 14.5px; }
+.sa-rows { display: grid; margin-top: 12px; border-top: 1px solid var(--rule-2); }
+.sa-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px; width: 100%; padding: 9px 4px; border: 0; border-bottom: 1px solid var(--rule); background: none; text-align: left; }
+.sa-row:hover, .sa-row.sel { background: var(--wash); }
+.sa-row-m { font-size: 14px; font-weight: 600; }
+.sa-row-v { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: 13.5px; font-weight: 600; min-width: 92px; text-align: right; }
+.sa-form { display: grid; gap: 12px; }
+.sa-amt { display: flex; align-items: center; gap: 6px; }
+.sa-amt span { font-size: 20px; font-weight: 600; color: var(--ink-3); }
+.sa-hint { margin: 0; padding: 8px 10px; border-radius: 9px; background: var(--sheet-2); border: 1px dashed var(--rule-2); font-size: 13px; font-weight: 600; color: var(--ink-2); }
+@media (max-width: 380px) { .sa-row { grid-template-columns: minmax(0, 1fr) auto; } .sa-row .pill { grid-row: 2; grid-column: 1 / -1; justify-self: start; } }
+
 /* Leyenda y gráficas */
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 6px; font-size: 12.5px; color: var(--ink-2); }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
@@ -865,13 +881,14 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     <section class="view two" id="v-resumen" role="tabpanel" aria-labelledby="tab-resumen">
       <div class="col">
         <article class="cheque" id="hero" style="--o:1" aria-label="Gasto del mes"></article>
-        <article class="card" id="r-meses" style="--o:3"></article>
-        <article class="card" id="r-ultimos" style="--o:6"></article>
+        <article class="card" id="r-saldo" style="--o:2" aria-label="Tus ahorros"></article>
+        <article class="card" id="r-meses" style="--o:4"></article>
+        <article class="card" id="r-ultimos" style="--o:7"></article>
       </div>
       <div class="col">
-        <article class="card" id="r-pred" style="--o:2"></article>
-        <article class="card" id="r-top" style="--o:4"></article>
-        <article class="card" id="r-ahorro" style="--o:5"></article>
+        <article class="card" id="r-pred" style="--o:3"></article>
+        <article class="card" id="r-top" style="--o:5"></article>
+        <article class="card" id="r-ahorro" style="--o:6"></article>
       </div>
     </section>
 
@@ -944,6 +961,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
           <form class="add-form" id="mn-form" novalidate>
             <label class="lbl" for="mn-n">Nuevo método</label>
             <div class="row"><input class="input" id="mn-n" autocomplete="off" placeholder="Ej. Tarjeta del banco"><button class="btn btn-primary" type="submit">Agregar</button></div>
+            <label class="check" for="mn-ah"><input type="checkbox" id="mn-ah">Sale de mis ahorros</label>
             <p class="form-error" id="mn-err" role="alert"></p>
           </form>
           <div id="met-list"></div>
@@ -988,6 +1006,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
         <label for="dm-met" id="dm-met-l">Método de pago</label>
         <input class="input" id="dm-met" autocomplete="off" placeholder="Elige abajo o escribe uno nuevo">
         <div class="chips" id="dm-met-chips"></div>
+        <p class="sa-hint" id="dm-met-hint" hidden></p>
       </div>
       <div class="field-row">
         <div class="field"><label for="dm-desc">Descripción</label><input class="input" id="dm-desc" list="dm-desc-list" autocomplete="off" placeholder="Ej. Pupusas"></div>
@@ -1230,6 +1249,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       put(k, 20 + mi, 'g', r(16, 28), 'c-entretenimiento', 'p-efectivo', 'Salida del fin de semana');
       put(k, 18 - mi, 'g', r(24, 42), 'c-compras', 'p-credito', 'Ropa');
       put(k, 11 + mi, 'g', r(6, 14), 'c-salud', 'p-efectivo', 'Farmacia');
+      if (mi === 2) put(k, 19, 'g', 85, 'c-transporte', 'p-ahorros', 'Reparación de la moto');
       if (mi === 1) put(k, 23, 'g', 25, 'c-otros', 'p-efectivo', 'Regalo de cumpleaños');
       if (mi === 3) put(k, 3, 'g', r(18, 26), 'c-comida', 'p-debito', 'Desayuno con la familia');
     });
@@ -1238,11 +1258,45 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
 
   /* ============ Estado ============ */
   var data = { config: null, meses: {} };
-  var EMPTY = { ing: 0, gas: 0, aho: 0, n: 0, byCat: {}, byCatN: {}, byMet: {}, day: {} };
+  var EMPTY = { ing: 0, gas: 0, aho: 0, n: 0, byCat: {}, byCatN: {}, byMet: {}, day: {}, gasAh: 0, ingAh: 0 };
+  /* Balance del mes: lo pagado con ahorros no sale del ingreso del mes; lo que entró directo a ahorros no está disponible */
+  function balOf(a) { return a.ing - (a.ingAh || 0) - (a.gas - (a.gasAh || 0)) - a.aho; }
+
+  /* ============ Saldo de ahorros ============ */
+  function ahorroSaldo(A) {
+    var pr = cfg().prefs || {};
+    if (typeof pr.ahIni !== 'number' || !isFinite(pr.ahIni) || !/^\d{4}-\d{2}-\d{2}$/.test(pr.ahFecha || '')) return null;
+    var d0 = pr.ahFecha, by = {}, total = pr.ahIni, last = d0.slice(0, 7);
+    A.movs.forEach(function (m) {
+      if (m.f < d0) return;
+      var delta = 0;
+      if (m.t === 'a') delta = m.m;
+      else if (isAhMet(m.p)) delta = m.t === 'i' ? m.m : -m.m;
+      if (!delta) return;
+      var k = m.f.slice(0, 7), r = by[k] || (by[k] = { ent: 0, sal: 0 });
+      if (delta > 0) r.ent += delta; else r.sal -= delta;
+      total += delta;
+      if (k > last) last = k;
+    });
+    var cur = keyOf(new Date()), end = last > cur ? last : cur, rows = [], bal = pr.ahIni;
+    for (var k = d0.slice(0, 7); k <= end; k = addMonths(k, 1)) {
+      var r = by[k] || { ent: 0, sal: 0 }, ini = bal;
+      bal = round2(bal + r.ent - r.sal);
+      rows.push({ k: k, ini: ini, ent: r.ent, sal: r.sal, cambio: round2(r.ent - r.sal), fin: bal });
+    }
+    return { ini: pr.ahIni, fecha: d0, saldo: round2(total), rows: rows };
+  }
 
   function cfg() { return data.config || DEF; }
   function catMap() { return cfg().cats || {}; }
-  function metMap() { return cfg().mets || {}; }
+  var AH_MET = 'p-ahorros';
+  function metMap() {
+    var base = cfg().mets || {}, pr = cfg().prefs || {};
+    if (pr.ahMetOff || base[AH_MET]) return base;
+    var o = {}; o[AH_MET] = { n: 'Efectivo (desde ahorros)', ord: 99, ah: 1 };
+    return Object.assign(o, base);
+  }
+  function isAhMet(id) { var m = id && metMap()[id]; return !!(m && m.ah); }
   function catInfo(id) {
     var c = catMap()[id];
     if (c) return { id: id, n: c.n, t: c.t, k: c.t === 'g' ? (c.k || 'n') : '', lim: c.lim > 0 ? Number(c.lim) : null, ord: c.ord || 0 };
@@ -1256,7 +1310,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   }
   function metList() {
     var m = metMap();
-    return Object.keys(m).filter(function (id) { return m[id]; }).map(function (id) { return { id: id, n: m[id].n, ord: m[id].ord || 0 }; })
+    return Object.keys(m).filter(function (id) { return m[id]; }).map(function (id) { return { id: id, n: m[id].n, ord: m[id].ord || 0, ah: m[id].ah ? 1 : 0 }; })
       .sort(function (a, b) { return a.ord - b.ord || a.n.localeCompare(b.n, 'es'); });
   }
   function metName(id) { var m = metMap()[id]; return m ? m.n : (id && id !== '_none' ? 'Método eliminado' : 'Sin método'); }
@@ -1281,14 +1335,16 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     var agg = {}, catUse = {}, metUse = {}, first = null, ej = 0, totAho = 0;
     movs.forEach(function (mv) {
       var k = mv.f.slice(0, 7);
-      var a = agg[k] || (agg[k] = { ing: 0, gas: 0, aho: 0, n: 0, byCat: {}, byCatN: {}, byMet: {}, day: {} });
+      var a = agg[k] || (agg[k] = { ing: 0, gas: 0, aho: 0, n: 0, byCat: {}, byCatN: {}, byMet: {}, day: {}, gasAh: 0, ingAh: 0 });
       a.n++;
       a.byCat[mv.c] = (a.byCat[mv.c] || 0) + mv.m;
       a.byCatN[mv.c] = (a.byCatN[mv.c] || 0) + 1;
-      if (mv.t === 'i') a.ing += mv.m;
+      var fromAh = isAhMet(mv.p);
+      if (mv.t === 'i') { a.ing += mv.m; if (fromAh) a.ingAh += mv.m; }
       else if (mv.t === 'a') { a.aho += mv.m; totAho += mv.m; }
       else {
         a.gas += mv.m;
+        if (fromAh) a.gasAh += mv.m;
         var d = Number(mv.f.slice(8, 10));
         a.day[d] = (a.day[d] || 0) + mv.m;
         var p = mv.p || '_none';
@@ -1301,6 +1357,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     });
     var res = { movs: movs, agg: agg, months: Object.keys(agg).sort(), first: first, ej: ej, catUse: catUse, metUse: metUse, totAho: totAho };
     res.pred = predict(res);
+    res.sav = ahorroSaldo(res);
     return res;
   }
 
@@ -1379,7 +1436,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   function $(s, el) { return (el || document).querySelector(s); }
   function $$(s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); }
   var VIEWS = ['resumen', 'movimientos', 'analisis', 'categorias'];
-  var ui = { tab: 'resumen', mes: curKey(), q: '', ftipo: '', fcat: '', fmet: '', ftodo: false, recorte: null, mview: 'grafica', rview: 'grafica', editCat: null, editMet: null, movLimit: 300 };
+  var ui = { tab: 'resumen', mes: curKey(), q: '', ftipo: '', fcat: '', fmet: '', ftodo: false, recorte: null, mview: 'grafica', rview: 'grafica', editCat: null, editMet: null, editSaldo: false, movLimit: 300 };
   var A = analyze();
 
   /* ============ Almacenamiento ============ */
@@ -1604,7 +1661,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     });
   }
   function opPutMet(m) {
-    var body = { n: m.n, ord: m.ord || 0 };
+    var body = { n: m.n, ord: m.ord || 0, ah: m.ah ? 1 : 0 };
     commit(function (D) { ensureConfig(D).mets[m.id] = clone(body); }, function () {
       var p = { mets: {} }; p.mets[m.id] = body; return [wConfig(p)];
     });
@@ -1620,10 +1677,12 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       Object.keys(byMonth).forEach(function (k) { var md = monthDoc(D, k); Object.keys(byMonth[k]).forEach(function (mid) { md.movs[mid] = clone(byMonth[k][mid]); }); });
       var c = ensureConfig(D); c.mets[id] = null;
       if (wasUlt) c.prefs.ultMet = moveTo || '';
+      if (id === AH_MET) c.prefs.ahMetOff = true;
     }, function () {
       var ps = Object.keys(byMonth).map(function (k) { return wMonth(k, byMonth[k]); });
       var p = { mets: {} }; p.mets[id] = null;
       if (wasUlt) p.prefs = { ultMet: moveTo || '' };
+      if (id === AH_MET) { p.prefs = p.prefs || {}; p.prefs.ahMetOff = true; }
       ps.push(wConfig(p));
       return ps;
     });
@@ -1735,14 +1794,57 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   function renderResumen() {
     $('#hero').innerHTML = heroHTML();
     drawGuil();
+    renderSaldoCard(false);
     $('#r-pred').innerHTML = predHTML(false);
     renderMesesCard();
     $('#r-top').innerHTML = topHTML();
     $('#r-ahorro').innerHTML = ahorroHTML(false);
     $('#r-ultimos').innerHTML = ultimosHTML();
   }
+  function renderSaldoCard(force) {
+    var el = $('#r-saldo'), ae = document.activeElement;
+    if (!force && ae && el.contains(ae) && ae.tagName === 'INPUT') return;
+    el.innerHTML = saldoHTML();
+  }
+  function saldoFormHTML(S) {
+    var pr = cfg().prefs || {};
+    return '<form id="sa-form" class="sa-form" novalidate>' +
+      '<div class="field"><label for="sa-monto">' + (S ? 'Saldo inicial' : '¿Cuánto tienes ahorrado ahora?') + '</label>' +
+      '<div class="sa-amt"><span aria-hidden="true">$</span><input class="input" id="sa-monto" inputmode="decimal" autocomplete="off" placeholder="0.00" value="' + (S ? S.ini.toFixed(2) : '') + '"></div>' +
+      '<span class="hint">Puede ser $0. Desde aquí se suma lo que ahorres y se resta lo que pagues con tus ahorros.</span></div>' +
+      '<div class="field"><label for="sa-fecha">Desde el día</label><input class="input" id="sa-fecha" type="date" value="' + esc(pr.ahFecha || iso(new Date())) + '"></div>' +
+      '<p class="form-error" id="sa-err" role="alert"></p>' +
+      '<div class="btn-row"><button class="btn btn-primary btn-sm" type="submit">' + (S ? 'Guardar' : 'Empezar') + '</button>' + (S ? '<button class="btn btn-sm" type="button" data-act="sa-cancel">Cancelar</button>' : '') + '</div></form>';
+  }
+  function cambioPill(c) {
+    if (c > 0.004) return '<span class="pill ok">↑ Creció ' + money(c) + '</span>';
+    if (c < -0.004) return '<span class="pill bad">↓ Bajó ' + money(-c) + '</span>';
+    return '<span class="pill neutral">= Sin cambios</span>';
+  }
+  function saldoHTML() {
+    var S = A.sav, metN = metMap()[AH_MET] ? metMap()[AH_MET].n : 'un método que salga de tus ahorros';
+    var h = '<div class="card-h"><div><span class="eyebrow">Tus ahorros</span></div>' + (S && !ui.editSaldo ? '<button class="link" type="button" data-act="sa-edit">Cambiar saldo inicial</button>' : '') + '</div>';
+    if (!S || ui.editSaldo) return h + (S ? '' : '<p class="empty" style="margin-bottom:12px">Lleva la cuenta de cuánto tienes ahorrado y mira cada mes si creció o bajó.</p>') + saldoFormHTML(S);
+    var k = ui.mes, row = S.rows.filter(function (r) { return r.k === k; })[0];
+    h += '<div class="sa-big">' + money(S.saldo) + '</div>';
+    h += '<p class="card-sub">Comenzaste con <b>' + money(S.ini) + '</b> el ' + esc(fechaLarga(S.fecha).toLowerCase()) + '.</p>';
+    if (row) {
+      h += '<div class="sa-mes"><span class="sa-mes-t">En ' + esc(mesN(k)) + '</span>' + cambioPill(row.cambio) + '</div>';
+      h += '<ul class="facts"><li><span>Entró <b>' + money(row.ent) + '</b> · salió <b>' + money(row.sal) + '</b>.</span></li><li><span>Empezó el mes en ' + money(row.ini) + ' y ' + (k === curKey() ? 'va en' : 'cerró en') + ' <b>' + money(row.fin) + '</b>.</span></li></ul>';
+    } else if (k < S.fecha.slice(0, 7)) {
+      h += '<p class="fine">Empezaste a llevar tus ahorros en ' + esc(mesN(S.fecha.slice(0, 7))) + '.</p>';
+    }
+    var rows = S.rows.slice(-6).reverse();
+    if (rows.length > 1 || (rows[0] && (rows[0].ent || rows[0].sal))) {
+      h += '<div class="sa-rows">' + rows.map(function (r) {
+        return '<button class="sa-row' + (r.k === k ? ' sel' : '') + '" type="button" data-act="mes" data-k="' + r.k + '"><span class="sa-row-m">' + esc(cap(mesN(r.k))) + (r.k.slice(0, 4) !== String(new Date().getFullYear()) ? ' ' + r.k.slice(0, 4) : '') + '</span>' + cambioPill(r.cambio) + '<span class="sa-row-v">' + money(r.fin) + '</span></button>';
+      }).join('') + '</div>';
+    }
+    h += '<p class="fine">Suma lo que registras como <b>Ahorro</b>. Para que un gasto salga de tus ahorros, págalo con «' + esc(metN) + '».</p>';
+    return h;
+  }
   function heroHTML() {
-    var k = ui.mes, a = A.agg[k] || EMPTY, cur = curKey(), P = A.pred, bal = a.ing - a.gas - a.aho, note;
+    var k = ui.mes, a = A.agg[k] || EMPTY, cur = curKey(), P = A.pred, bal = balOf(a), note;
     if (k === cur) {
       if (P.can && a.n) note = 'A este ritmo cerrarás ' + esc(mesN(k)) + ' con <b>≈ ' + moneyR(P.gas) + '</b> en gastos.';
       else if (a.n) note = 'Vas en el día ' + P.day + ' de ' + P.dim + '. Con unos días más de datos verás la proyección del mes.';
@@ -1750,6 +1852,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     } else if (k < cur) {
       note = a.n ? 'Mes cerrado · ' + a.n + (a.n === 1 ? ' movimiento.' : ' movimientos.') : 'Sin movimientos en ' + esc(mesN(k)) + '.';
     } else note = 'Este mes aún no empieza.';
+    if (a.gasAh > 0) note += ' Pagaste <b>' + money(a.gasAh) + '</b> con tus ahorros; no cuenta contra el balance.';
     var cta = ready && !A.movs.length ? '<div class="hero-cta"><button class="btn btn-primary" type="button" data-act="add">Agregar mi primer gasto</button></div>' : '';
     return '<canvas class="guil" aria-hidden="true"></canvas>' +
       (A.ej ? '<span class="stamp" aria-hidden="true">Muestra</span>' : '') +
@@ -1775,7 +1878,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     if (k < cur) {
       h = cardH('Cierre de ' + esc(mesN(k)));
       if (!a.n) return h + '<p class="empty">No hay movimientos en este mes.</p>';
-      var pk = addMonths(k, -1), pa = A.agg[pk], q = a.ing - a.gas - a.aho;
+      var pk = addMonths(k, -1), pa = A.agg[pk], q = balOf(a);
       h += '<p class="pred-big">Gastaste <b>' + money(a.gas) + '</b></p><ul class="facts">';
       if (pa && pa.gas > 0) {
         var d = a.gas / pa.gas - 1;
@@ -1812,7 +1915,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
         h += '<div class="stat-row">' +
           statHTML('Gastos en ' + mesN(nk), '≈ ' + moneyR(P.next.gas), 'key-out') +
           statHTML('Ingresos en ' + mesN(nk), '≈ ' + moneyR(P.next.ing), 'key-in') +
-          statHTML('Ahorro en 12 meses', '≈ ' + moneyR(A.totAho + 12 * P.next.aho), 'key-save') + '</div>';
+          statHTML('Ahorro en 12 meses', '≈ ' + moneyR((A.sav ? A.sav.saldo : A.totAho) + 12 * P.next.aho), 'key-save') + '</div>';
       }
       var al = alertas();
       if (al.length) h += '<div class="alerts">' + al.map(function (x) { return '<div class="alert">' + x.pill + '<span>' + x.text + '</span></div>'; }).join('') + '</div>';
@@ -1975,7 +2078,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     tip.style.transform = 'translate(' + Math.round(left) + 'px,' + Math.round(top) + 'px)';
   }
   function tipMes(k) {
-    var a = A.agg[k] || EMPTY, q = a.ing - a.gas - a.aho, cur = curKey();
+    var a = A.agg[k] || EMPTY, q = balOf(a), cur = curKey();
     var h = '<div class="tip-h">' + esc(mesL(k)) + (k === cur ? ' · en curso' : '') + '</div>';
     h += tipRow('kl-in', money(a.ing), 'ingresos') + tipRow('kl-out', money(a.gas), 'gastos');
     if (k === cur && A.pred.can && A.pred.gas > a.gas + 0.5) h += tipRow('kl-proj', '≈ ' + moneyR(A.pred.gas), 'gastos al cierre');
@@ -2181,8 +2284,8 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   function histTableHTML() {
     var cur = curKey(), tI = 0, tG = 0, tA = 0;
     var body = A.months.slice().reverse().map(function (k) {
-      var a = A.agg[k], q = a.ing - a.gas - a.aho;
-      tI += a.ing; tG += a.gas; tA += a.aho;
+      var a = A.agg[k], q = balOf(a);
+      tI += a.ing - (a.ingAh || 0); tG += a.gas - (a.gasAh || 0); tA += a.aho;
       return '<tr class="' + (k === ui.mes ? 'sel' : '') + '"><th scope="row"><button class="row-btn" type="button" data-act="mes" data-k="' + k + '">' + esc(mesL(k)) + '</button>' + (k === cur ? '<span class="tag">en curso</span>' : '') + '</th>' +
         '<td>' + money(a.ing) + '</td><td>' + money(a.gas) + '</td><td>' + money(a.aho) + '</td><td class="' + (q < 0 ? 'neg' : '') + '">' + moneyAcct(q) + '</td><td>' + (a.ing > 0 ? pctS(a.aho / a.ing) : '—') + '</td></tr>';
     }).join('');
@@ -2266,8 +2369,8 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     var m = '';
     metList().forEach(function (x) {
       var uses = A.metUse[x.id] || 0, open = ui.editMet === x.id;
-      m += '<button class="cat-row" type="button" data-act="met-edit" data-id="' + esc(x.id) + '" aria-expanded="' + open + '"><span><span class="nm">' + esc(x.n) + '</span><span class="meta">' + (uses ? uses + (uses === 1 ? ' uso' : ' usos') : 'sin usar') + '</span></span><span></span>' + chevron + '</button>';
-      if (open) m += '<form class="cat-edit" id="me-form" data-id="' + esc(x.id) + '" novalidate><div class="field"><label for="me-n">Nombre</label><input class="input" id="me-n" value="' + esc(x.n) + '" autocomplete="off"></div><p class="form-error" id="me-err" role="alert"></p><div class="btn-row"><button class="btn btn-primary btn-sm" type="submit">Guardar</button><button class="btn btn-sm" type="button" data-act="met-close">Cancelar</button><span style="flex:1"></span><button class="btn btn-danger btn-sm" type="button" data-act="met-del" data-id="' + esc(x.id) + '">Eliminar</button></div></form>';
+      m += '<button class="cat-row" type="button" data-act="met-edit" data-id="' + esc(x.id) + '" aria-expanded="' + open + '"><span><span class="nm">' + esc(x.n) + '</span><span class="meta">' + (x.ah ? 'Sale de tus ahorros · ' : '') + (uses ? uses + (uses === 1 ? ' uso' : ' usos') : 'sin usar') + '</span></span><span></span>' + chevron + '</button>';
+      if (open) m += '<form class="cat-edit" id="me-form" data-id="' + esc(x.id) + '" novalidate><div class="field"><label for="me-n">Nombre</label><input class="input" id="me-n" value="' + esc(x.n) + '" autocomplete="off"></div><label class="check" for="me-ah"><input type="checkbox" id="me-ah"' + (x.ah ? ' checked' : '') + '>Sale de mis ahorros</label><p class="form-error" id="me-err" role="alert"></p><div class="btn-row"><button class="btn btn-primary btn-sm" type="submit">Guardar</button><button class="btn btn-sm" type="button" data-act="met-close">Cancelar</button><span style="flex:1"></span><button class="btn btn-danger btn-sm" type="button" data-act="met-del" data-id="' + esc(x.id) + '">Eliminar</button></div></form>';
     });
     mh.innerHTML = m || '<p class="empty">Sin métodos. Agrega el primero arriba.</p>';
     renderDatos();
@@ -2379,6 +2482,9 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       return '<button type="button" class="chip' + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-act="met-pick" data-id="' + esc(m.id) + '">' + esc(m.n) + '</button>';
     }).join('');
     $('#dm-met-chips').innerHTML = h;
+    var hint = $('#dm-met-hint'), pick = exact && exact.ah ? exact : null;
+    hint.hidden = !pick;
+    if (pick) hint.textContent = F.tipo === 'g' ? 'Este gasto se restará de tus ahorros.' : 'Esto se sumará a tus ahorros.';
   }
   function fillDescList() {
     var cnt = {}, disp = {};
@@ -2456,7 +2562,10 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       toast('Cambios guardados.', { label: 'Deshacer', fn: function () { opSaveMov(prev, mov, null, null); } });
     } else {
       var saved = Object.assign({ k: fecha.slice(0, 7) }, mov);
-      toast((newCat ? 'Nueva categoría «' + cat.n + '». ' : '') + nm + ' guardado: ' + money(monto) + '.', { label: 'Deshacer', fn: function () { opDelMov(saved); } });
+      var extraAh = '';
+      if (met && met.ah && t !== 'a') { var S2 = ahorroSaldo(analyze()); if (S2) extraAh = ' Tus ahorros ' + (t === 'g' ? 'bajaron' : 'subieron') + ' a ' + money(S2.saldo) + '.'; }
+      else if (t === 'a') { var S3 = ahorroSaldo(analyze()); if (S3) extraAh = ' Ahorros: ' + money(S3.saldo) + '.'; }
+      toast((newCat ? 'Nueva categoría «' + cat.n + '». ' : '') + nm + ' guardado: ' + money(monto) + '.' + extraAh, { label: 'Deshacer', fn: function () { opDelMov(saved); } });
     }
     if (fecha.slice(0, 7) !== ui.mes && !old) { ui.mes = fecha.slice(0, 7); }
   }
@@ -2674,6 +2783,8 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
           break;
         case 'met-close': ui.editMet = null; renderCats(true); break;
         case 'met-del': delMet(id); break;
+        case 'sa-edit': ui.editSaldo = true; renderSaldoCard(true); var sm = $('#sa-monto'); if (sm) sm.focus(); break;
+        case 'sa-cancel': ui.editSaldo = false; renderSaldoCard(true); break;
       }
     });
 
@@ -2739,6 +2850,17 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       toast('Categoría creada: ' + c.n + '.');
     });
     $$('input[name="cn-t"]').forEach(function (r) { r.addEventListener('change', function () { $('#cn-k').hidden = !$('#cn-t-g').checked; }); });
+    $('#r-saldo').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = parseMonto($('#sa-monto').value), d = $('#sa-fecha').value, err = $('#sa-err');
+      if (!(v >= 0)) { err.textContent = 'Escribe cuánto tienes ahorrado. Puede ser 0.'; $('#sa-monto').focus(); return; }
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) { err.textContent = 'Elige desde qué día.'; return; }
+      if (!ready) { err.textContent = 'Conectando con tu libreta… intenta en un momento.'; return; }
+      ui.editSaldo = false;
+      document.activeElement && document.activeElement.blur();
+      opPrefs({ ahIni: v, ahFecha: d });
+      toast('Listo: comenzaste con ' + money(v) + ' de ahorro.');
+    });
     $('#mn-form').addEventListener('submit', function (e) {
       e.preventDefault();
       var n = $('#mn-n').value.trim(), err = $('#mn-err');
@@ -2746,8 +2868,8 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       if (metList().some(function (m) { return norm(m.n) === norm(n); })) { err.textContent = 'Ya tienes «' + n + '».'; return; }
       if (!ready) { err.textContent = 'Conectando con tu libreta… intenta en un momento.'; return; }
       err.textContent = '';
-      opPutMet({ id: uid('p-'), n: cap(n), ord: nextMetOrd() });
-      $('#mn-n').value = '';
+      opPutMet({ id: uid('p-'), n: cap(n), ord: nextMetOrd(), ah: $('#mn-ah').checked ? 1 : 0 });
+      $('#mn-n').value = ''; $('#mn-ah').checked = false;
       toast('Método agregado: ' + cap(n) + '.');
     });
     $('#cat-list').addEventListener('submit', function (e) {
@@ -2780,7 +2902,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       if (!n) { err.textContent = 'El nombre no puede quedar vacío.'; return; }
       if (metList().some(function (x) { return x.id !== id && norm(x.n) === norm(n); })) { err.textContent = 'Ya existe otro método con ese nombre.'; return; }
       if (!ready) { err.textContent = 'Conectando con tu libreta… intenta en un momento.'; return; }
-      opPutMet({ id: id, n: cap(n), ord: m.ord || 0 });
+      opPutMet({ id: id, n: cap(n), ord: m.ord || 0, ah: $('#me-ah').checked ? 1 : 0 });
       ui.editMet = null;
       renderCats(true);
       toast('Método actualizado.');

@@ -201,7 +201,8 @@ p { margin: 0; }
 }
 .tabs {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  max-width: 640px;
   max-width: 560px;
   height: var(--dock-h);
   margin: 0 auto;
@@ -216,10 +217,15 @@ p { margin: 0; }
   border: 0;
   background: none;
   color: var(--ink-3);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
-  letter-spacing: .01em;
+  letter-spacing: 0;
+  min-width: 0;
 }
+.tab span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tab .ts { display: none; }
+@media (max-width: 899px) { .tab span { font-stretch: 86%; } }
+@media (max-width: 440px) { .tab .tl { display: none; } .tab .ts { display: inline; } }
 .tab svg { width: 22px; height: 22px; }
 .tab[aria-selected="true"] { color: var(--ink); font-weight: 750; }
 .tab[aria-selected="true"]::before {
@@ -473,6 +479,24 @@ p { margin: 0; }
 .tj-stats dd { margin: 1px 0 0; font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 600; }
 .tj-actions { margin-top: 4px; }
 #dm-card-row .chips { margin-top: 2px; }
+
+/* Deudas */
+.sub-t { margin: 18px 0 4px; font-size: 13.5px; font-weight: 700; }
+.tj-done { opacity: .75; }
+.tj-done::before { background: var(--ok); }
+.d-pays { display: grid; gap: 2px; margin-top: 4px; }
+.d-pay { display: flex; justify-content: space-between; gap: 10px; padding: 6px 2px; border: 0; border-bottom: 1px solid var(--rule); background: none; font-size: 13px; color: var(--ink-2); text-align: left; }
+.d-pay:hover { background: var(--wash); }
+.d-pay b { font-family: var(--f-mono); color: var(--ink); }
+.d-row { cursor: default; }
+.d-row:hover { background: none; }
+.d-order { margin: 6px 0 0; padding-left: 20px; display: grid; gap: 6px; font-size: 14px; }
+.d-order li { padding-left: 4px; }
+.d-order li span { margin-right: 6px; }
+.d-order b { font-family: var(--f-mono); font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.ledger-t th .pill { margin-left: 4px; }
+.d-plan-t th[scope=row] { white-space: normal; }
+.d-plan-t td, .d-plan-t th { padding-inline: 6px; }
 
 /* Leyenda y gráficas */
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 6px; font-size: 12.5px; color: var(--ink-2); }
@@ -897,10 +921,11 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   <div class="dock">
     <nav class="tabs" role="tablist" aria-label="Secciones">
       <button class="tab" role="tab" type="button" id="tab-resumen" data-tab="resumen" aria-controls="v-resumen" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7 10h7M7 14h4M15 14h2"/></svg><span>Resumen</span></button>
-      <button class="tab" role="tab" type="button" id="tab-movimientos" data-tab="movimientos" aria-controls="v-movimientos" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="M4.5 6.5h.01M4.5 12h.01M4.5 17.5h.01" stroke-width="2.6"/></svg><span>Movimientos</span></button>
+      <button class="tab" role="tab" type="button" id="tab-movimientos" data-tab="movimientos" aria-controls="v-movimientos" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="M4.5 6.5h.01M4.5 12h.01M4.5 17.5h.01" stroke-width="2.6"/></svg><span><span class="tl">Movimientos</span><span class="ts">Registro</span></span></button>
       <button class="tab" role="tab" type="button" id="tab-tarjetas" data-tab="tarjetas" aria-controls="v-tarjetas" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19M6.5 15h4"/></svg><span>Tarjetas</span></button>
+      <button class="tab" role="tab" type="button" id="tab-deudas" data-tab="deudas" aria-controls="v-deudas" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V9l8-5 8 5v11"/><path d="M8 20v-6h8v6M3 20h18"/></svg><span>Deudas</span></button>
       <button class="tab" role="tab" type="button" id="tab-analisis" data-tab="analisis" aria-controls="v-analisis" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20h17"/><path d="M7 16.5v-5M12 16.5V6M17 16.5V9.5"/></svg><span>Análisis</span></button>
-      <button class="tab" role="tab" type="button" id="tab-categorias" data-tab="categorias" aria-controls="v-categorias" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l8.3 8.3a1.2 1.2 0 0 1 0 1.7l-6.5 6.5a1.2 1.2 0 0 1-1.7 0z"/><circle cx="8" cy="8" r="1.4"/></svg><span>Categorías</span></button>
+      <button class="tab" role="tab" type="button" id="tab-categorias" data-tab="categorias" aria-controls="v-categorias" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l8.3 8.3a1.2 1.2 0 0 1 0 1.7l-6.5 6.5a1.2 1.2 0 0 1-1.7 0z"/><circle cx="8" cy="8" r="1.4"/></svg><span><span class="tl">Categorías</span><span class="ts">Ajustes</span></span></button>
     </nav>
     <button class="fab" type="button" data-act="add" aria-label="Agregar movimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
   </div>
@@ -947,6 +972,48 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       <div class="card">
         <p class="list-sum" id="mov-sum"></p>
         <div class="ledger" id="mov-list"></div>
+      </div>
+    </section>
+
+    <section class="view two" id="v-deudas" role="tabpanel" aria-labelledby="tab-deudas" hidden>
+      <article class="card wide" id="d-resumen" style="--o:1"></article>
+      <div class="col">
+        <div class="tj-list" id="d-list" style="--o:3"></div>
+        <article class="card" id="d-form" style="--o:7">
+          <div class="card-h"><div><h2 class="card-t" id="dd-title">Agregar deuda</h2><p class="card-sub">Préstamos, compras a cuotas o cualquier cosa que estés pagando. Llena lo que sepas.</p></div></div>
+          <form id="dd-form" class="sa-form" data-for="x" novalidate>
+            <div class="field"><label for="dd-n">Nombre</label><input class="input" id="dd-n" autocomplete="off" placeholder="Ej. Préstamo del carro, Celular a cuotas"></div>
+            <div class="seg sm" role="radiogroup" aria-label="Tipo de deuda">
+              <label><input type="radio" name="dd-t" id="dd-t-p" value="p" checked><span>Préstamo</span></label>
+              <label><input type="radio" name="dd-t" id="dd-t-c" value="c"><span>A cuotas</span></label>
+              <label><input type="radio" name="dd-t" id="dd-t-o" value="o"><span>Otra</span></label>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="dd-cuota">Cuota mensual</label><input class="input" id="dd-cuota" inputmode="decimal" autocomplete="off" placeholder="Ej. 120"></div>
+              <div class="field"><label for="dd-ntot">Total de cuotas</label><input class="input" id="dd-ntot" inputmode="numeric" autocomplete="off" placeholder="Ej. 24"></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="dd-saldo">Lo que debes hoy</label><input class="input" id="dd-saldo" inputmode="decimal" autocomplete="off" placeholder="Se calcula si lo dejas vacío"></div>
+              <div class="field"><label for="dd-pag">Cuotas que ya pagaste</label><input class="input" id="dd-pag" inputmode="numeric" autocomplete="off" placeholder="0"></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="dd-monto">Monto original (opcional)</label><input class="input" id="dd-monto" inputmode="decimal" autocomplete="off" placeholder="Lo que te prestaron o costaba"></div>
+              <div class="field"><label for="dd-tasa">Tasa anual % (opcional)</label><input class="input" id="dd-tasa" inputmode="decimal" autocomplete="off" placeholder="Ej. 18"></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="dd-int">Interés pagado hasta hoy</label><input class="input" id="dd-int" inputmode="decimal" autocomplete="off" placeholder="0.00"></div>
+              <div class="field"><label for="dd-dia">Día de pago</label><input class="input" id="dd-dia" inputmode="numeric" autocomplete="off" placeholder="Ej. 15"></div>
+            </div>
+            <span class="hint">Sin tasa: si pones monto original, cuota y total de cuotas, calculo el interés incluido en las cuotas.</span>
+            <p class="form-error" id="dd-err" role="alert"></p>
+            <div class="btn-row"><button class="btn btn-primary btn-sm" type="submit" id="dd-save">Agregar deuda</button><button class="btn btn-sm" type="button" data-act="deuda-cancel" id="dd-cancel" hidden>Cancelar</button><span style="flex:1"></span><button class="btn btn-danger btn-sm" type="button" data-act="deuda-del" id="dd-del" hidden>Eliminar</button></div>
+          </form>
+        </article>
+      </div>
+      <div class="col">
+        <article class="card" id="d-apartar" style="--o:2" hidden></article>
+        <article class="card" id="d-plan" style="--o:4" hidden></article>
+        <article class="card" id="d-tips" style="--o:5" hidden></article>
       </div>
     </section>
 
@@ -1103,6 +1170,29 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       <p class="form-error" id="pg-err" role="alert"></p>
     </div>
     <div class="sheet-foot"><button type="button" class="btn btn-danger" id="pg-del" data-act="del-pago" hidden>Eliminar</button><span class="spacer"></span><button type="button" class="btn" data-act="close-pago">Cancelar</button><button type="submit" class="btn btn-primary">Guardar pago</button></div>
+  </form>
+</dialog>
+
+<dialog class="sheet" id="dlg-dp" aria-labelledby="dp-title">
+  <form id="f-dp" novalidate>
+    <div class="sheet-head"><h2 id="dp-title">Marcar pago</h2><button type="button" class="icon-btn" data-act="close-dp" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="sheet-body">
+      <div class="field"><label for="dp-dj">Deuda</label><select class="input" id="dp-dj"></select></div>
+      <div class="seg" style="--n:2" role="radiogroup" aria-label="Tipo de pago">
+        <label><input type="radio" name="dp-k" id="dp-k-c" value="c" checked><span>Cuota del mes</span></label>
+        <label><input type="radio" name="dp-k" id="dp-k-x" value="x"><span>Abono extra</span></label>
+      </div>
+      <p class="sa-hint" id="dp-hint" hidden></p>
+      <div><label class="amount-field" for="dp-monto"><span class="cur" aria-hidden="true">$</span><span class="sr-only">Monto pagado</span><input id="dp-monto" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00"></label></div>
+      <div class="field-row">
+        <div class="field"><label for="dp-met">Pagaste con</label><select class="input" id="dp-met"></select></div>
+        <div class="field"><label for="dp-fecha">Fecha</label><input class="input" id="dp-fecha" type="date"></div>
+      </div>
+      <p class="sa-hint" id="dp-ah" hidden>Este pago se restará de tus ahorros.</p>
+      <p class="fine">Se guarda también como gasto en la categoría Deudas.</p>
+      <p class="form-error" id="dp-err" role="alert"></p>
+    </div>
+    <div class="sheet-foot"><button type="button" class="btn btn-danger" id="dp-del" data-act="del-dp" hidden>Eliminar</button><span class="spacer"></span><button type="button" class="btn" data-act="close-dp">Cancelar</button><button type="submit" class="btn btn-primary">Guardar pago</button></div>
   </form>
 </dialog>
 
@@ -1398,6 +1488,101 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     return { list: list, by: by };
   }
 
+  /* ============ Deudas y cuotas ============ */
+  var DTIPO = { p: 'Préstamo', c: 'Compra a cuotas', o: 'Otra deuda' };
+  function deudaList() {
+    var m = cfg().deudas || {};
+    return Object.keys(m).filter(function (id) { return m[id]; }).map(function (id) {
+      var x = m[id];
+      function num(v) { return v === null || v === undefined || v === '' || !isFinite(Number(v)) ? null : Number(v); }
+      return { id: id, n: x.n || 'Deuda', tipo: x.tipo === 'c' || x.tipo === 'o' ? x.tipo : 'p', monto: num(x.monto), tasa: num(x.tasa) > 0 ? Number(x.tasa) : null,
+        cuota: num(x.cuota) > 0 ? Number(x.cuota) : null, nTot: num(x.nTot) > 0 ? Math.round(x.nTot) : null, pag0: Math.max(0, Math.round(num(x.pag0) || 0)),
+        saldo0: num(x.saldo0), int0: num(x.int0) || 0, dia: num(x.dia) >= 1 && num(x.dia) <= 31 ? Math.round(x.dia) : null, f0: x.f0 || '', ord: x.ord || 0 };
+    }).sort(function (a, b) { return a.ord - b.ord; });
+  }
+  /* Simula una deuda mes a mes con un pago fijo; devuelve meses, intereses y saldos */
+  function simOne(st, extra) {
+    var bal = st.saldo, pay0 = (st.cuota || 0) + (extra || 0), series = [round2(bal)], months = 0, it = 0;
+    if (bal <= 0.005) return { months: 0, interest: 0, series: series };
+    if (!(pay0 > 0)) return { months: null, interest: null, series: series };
+    while (bal > 0.5 && months < 600) {
+      var i = st.mode === 'a' ? bal * st.r : 0;
+      if (st.mode === 'a' && pay0 <= i + 0.004) return { months: null, interest: null, series: series, never: true };
+      var pay = Math.min(pay0, bal + i);
+      bal = bal + i - pay; it += i; months++;
+      series.push(round2(Math.max(0, bal)));
+    }
+    if (st.mode === 'f') it = st.flatInt * Math.ceil(st.saldo / st.cuota - 1e-9);
+    return { months: months, interest: round2(it), series: series };
+  }
+  function deudaState(d, pays) {
+    var r = d.tasa ? d.tasa / 1200 : 0;
+    var flatInt = !r && d.monto > 0 && d.cuota > 0 && d.nTot > 0 && d.cuota * d.nTot > d.monto + 0.5 ? (d.cuota * d.nTot - d.monto) / d.nTot : 0;
+    var mode = r ? 'a' : flatInt ? 'f' : 'z';
+    var saldo = d.saldo0;
+    if (saldo == null) {
+      var k0 = d.nTot && d.cuota ? Math.max(0, d.nTot - d.pag0) : 0;
+      saldo = r ? d.cuota * (1 - Math.pow(1 + r, -k0)) / r : k0 * (d.cuota || 0);
+    }
+    var pag = d.pag0, intPag = d.int0, paid = 0, extraTot = 0, mine = [];
+    pays.forEach(function (p) {
+      if (d.f0 && p.f < d.f0) return;
+      var i = mode === 'a' ? saldo * r : mode === 'f' && !p.dx ? Math.min(flatInt, p.m) : 0;
+      i = Math.min(i, p.m);
+      saldo -= mode === 'a' ? p.m - i : p.m;
+      if (saldo < 0) saldo = 0;
+      intPag += i; paid += p.m;
+      if (p.dx) extraTot += p.m; else pag++;
+      mine.push(p);
+    });
+    var st = { d: d, mode: mode, r: r, flatInt: flatInt, cuota: d.cuota, saldo: round2(saldo), pag: pag, intPag: round2(intPag), paid: round2(paid), extraTot: round2(extraTot), pays: mine };
+    st.base = simOne(st, 0);
+    st.restantes = st.base.months;
+    var cur = keyOf(new Date());
+    st.paidThisMonth = mine.some(function (p) { return !p.dx && p.f.slice(0, 7) === cur; });
+    st.lastPay = mine.length ? mine[mine.length - 1] : null;
+    if (d.nTot) st.prog = clamp(pag / d.nTot, 0, 1);
+    else if (mode === 'f' && d.cuota && d.nTot) st.prog = clamp(1 - st.saldo / (d.cuota * d.nTot), 0, 1);
+    else if (d.monto > 0) st.prog = clamp(1 - st.saldo / d.monto, 0, 1);
+    else st.prog = null;
+    return st;
+  }
+  /* Varias deudas a la vez: base = cada una paga su cuota; plan = presupuesto fijo con pago extra y "efecto cascada" */
+  function simPlan(items, extra, order, rollover) {
+    var ds = items.map(function (x) { return { id: x.id, n: x.n, bal: x.saldo, r: x.r, min: x.min, mode: x.mode, flat: x.flatFixed || 0, rate: x.rate }; });
+    var budget = sum(ds.map(function (x) { return x.min; })) + (extra || 0);
+    var series = [round2(sum(ds.map(function (x) { return x.bal; })))], months = 0, it = 0, doneAt = {};
+    while (ds.some(function (x) { return x.bal > 0.5; }) && months < 600) {
+      var left = budget, stuck = true;
+      ds.forEach(function (x) { if (x.bal > 0.005) { var i = x.mode === 'a' ? x.bal * x.r : 0; x.bal += i; it += i; } });
+      ds.forEach(function (x) { if (x.bal > 0.005) { var p = Math.min(x.min, x.bal); x.bal -= p; left -= p; if (p > 0) stuck = false; } });
+      if (rollover && left > 0.004) {
+        var tgt = ds.filter(function (x) { return x.bal > 0.005; }).sort(order === 'snow' ? function (a, b) { return a.bal - b.bal; } : function (a, b) { return b.rate - a.rate || a.bal - b.bal; });
+        tgt.forEach(function (x) { if (left <= 0.004) return; var p = Math.min(left, x.bal); x.bal -= p; left -= p; });
+      }
+      months++;
+      ds.forEach(function (x) { if (x.bal <= 0.5 && !doneAt[x.id]) { doneAt[x.id] = months; x.bal = 0; } });
+      series.push(round2(sum(ds.map(function (x) { return Math.max(0, x.bal); }))));
+      if (stuck) break;
+    }
+    var never = ds.some(function (x) { return x.bal > 0.5; });
+    return { months: never ? null : months, interest: round2(it + sum(items.map(function (x) { return x.flatFixed || 0; }))), series: series, doneAt: doneAt, never: never };
+  }
+  function deudasData(A) {
+    var list = deudaList(), pays = {};
+    A.movs.forEach(function (m) { if (m.dj) (pays[m.dj] = pays[m.dj] || []).push(m); });
+    Object.keys(pays).forEach(function (k) { pays[k].sort(function (a, b) { return a.f < b.f ? -1 : a.f > b.f ? 1 : a.ts - b.ts; }); });
+    var sts = list.map(function (d) { return deudaState(d, pays[d.id] || []); });
+    var by = {}; sts.forEach(function (s) { by[s.d.id] = s; });
+    var cards = (A.tj ? A.tj.list : []).filter(function (s) { return s.c.tipo === 'c' && s.deuda > 0.005; });
+    var items = sts.filter(function (s) { return s.saldo > 0.005 && s.cuota > 0; }).map(function (s) {
+      return { id: s.d.id, n: s.d.n, saldo: s.saldo, r: s.r, min: s.cuota, mode: s.mode, rate: s.d.tasa || 0, flatFixed: s.mode === 'f' ? s.base.interest : 0 };
+    }).concat(cards.filter(function (s) { return s.c.tasa; }).map(function (s) {
+      return { id: s.c.id, n: s.c.n, saldo: s.deuda, r: s.c.tasa / 1200, min: Math.max(15, Math.round(s.deuda * 0.05)), mode: 'a', rate: s.c.tasa, card: 1 };
+    }));
+    return { list: sts, by: by, cards: cards, items: items };
+  }
+
   function cfg() { return data.config || DEF; }
   function catMap() { return cfg().cats || {}; }
   var AH_MET = 'p-ahorros';
@@ -1440,7 +1625,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
         var t = v.t === 'i' || v.t === 'a' || v.t === 'p' ? v.t : 'g';
         if (t === 'p' && !v.tj) return;
         var c = t === 'p' ? '' : cm[v.c] && cm[v.c].t === t ? v.c : '_none-' + t;
-        movs.push({ id: id, k: k, t: t, m: round2(m), f: v.f, c: c, p: v.p || '', d: v.d || '', ts: Number(v.ts) || 0, e: v.e ? 1 : 0, tj: v.tj || '' });
+        movs.push({ id: id, k: k, t: t, m: round2(m), f: v.f, c: c, p: v.p || '', d: v.d || '', ts: Number(v.ts) || 0, e: v.e ? 1 : 0, tj: v.tj || '', dj: t === 'g' && v.dj ? v.dj : '', dx: v.dx ? 1 : 0 });
       });
     });
     movs.sort(function (a, b) { return a.f < b.f ? 1 : a.f > b.f ? -1 : b.ts - a.ts; });
@@ -1479,6 +1664,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     res.pred = predict(res);
     res.sav = ahorroSaldo(res);
     res.tj = tarjetasData(res);
+    res.deu = deudasData(res);
     return res;
   }
 
@@ -1556,8 +1742,8 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   /* ============ DOM ============ */
   function $(s, el) { return (el || document).querySelector(s); }
   function $$(s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); }
-  var VIEWS = ['resumen', 'movimientos', 'tarjetas', 'analisis', 'categorias'];
-  var ui = { tab: 'resumen', mes: curKey(), q: '', ftipo: '', fcat: '', fmet: '', ftodo: false, recorte: null, mview: 'grafica', rview: 'grafica', editCat: null, editMet: null, editSaldo: false, editCard: null, movLimit: 300 };
+  var VIEWS = ['resumen', 'movimientos', 'tarjetas', 'deudas', 'analisis', 'categorias'];
+  var ui = { tab: 'resumen', mes: curKey(), q: '', ftipo: '', fcat: '', fmet: '', ftodo: false, recorte: null, mview: 'grafica', rview: 'grafica', editCat: null, editMet: null, editSaldo: false, editCard: null, editDeuda: null, extra: null, movLimit: 300 };
   var A = analyze();
 
   /* ============ Almacenamiento ============ */
@@ -1574,12 +1760,13 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     if (!D.config) D.config = clone(DEF);
     if (!D.config.cats) D.config.cats = {};
     if (!D.config.mets) D.config.mets = {};
+    if (!D.config.deudas) D.config.deudas = {};
     if (!D.config.prefs) D.config.prefs = {};
     return D.config;
   }
   function compactConfig(c) {
     var o = clone(c) || clone(DEF);
-    ['cats', 'mets'].forEach(function (k) { o[k] = o[k] || {}; Object.keys(o[k]).forEach(function (id) { if (!o[k][id]) delete o[k][id]; }); });
+    ['cats', 'mets', 'deudas'].forEach(function (k) { o[k] = o[k] || {}; Object.keys(o[k]).forEach(function (id) { if (!o[k][id]) delete o[k][id]; }); });
     o.prefs = o.prefs || {};
     return o;
   }
@@ -1597,7 +1784,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     var m = D.meses[k];
     return !!(m && m.movs && Object.keys(m.movs).some(function (id) { return !!m.movs[id]; }));
   }
-  function movBody(m) { var b = { t: m.t, m: round2(m.m), f: m.f, c: m.c || '', p: m.p || '', d: m.d || '', ts: m.ts || Date.now(), e: m.e ? 1 : 0 }; if (m.t === 'p') b.tj = m.tj; return b; }
+  function movBody(m) { var b = { t: m.t, m: round2(m.m), f: m.f, c: m.c || '', p: m.p || '', d: m.d || '', ts: m.ts || Date.now(), e: m.e ? 1 : 0 }; if (m.t === 'p') b.tj = m.tj; if (m.dj) { b.dj = m.dj; b.dx = m.dx ? 1 : 0; } return b; }
   function catBody(c) { return { n: c.n, t: c.t, k: c.t === 'g' ? (c.k || 'n') : '', lim: c.lim > 0 ? round2(c.lim) : null, ord: c.ord || 0 }; }
 
   function commit(apply, writes) {
@@ -1881,6 +2068,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     else if (ui.tab === 'movimientos') renderMovs();
     else if (ui.tab === 'analisis') renderAnalisis();
     else if (ui.tab === 'tarjetas') renderTarjetas();
+    else if (ui.tab === 'deudas') renderDeudas();
     else renderCats(false);
     if ($('#dlg-mov').open) { renderCatChips(); renderMetChips(); }
     $('#dm-save').disabled = !ready;
@@ -2603,6 +2791,344 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     toast('Pago de ' + money(m) + ' registrado.' + (st && st.c.tipo === 'c' ? ' Deuda de ' + st.c.n + ': ' + money(st.deuda) + '.' : ''), old ? null : { label: 'Deshacer', fn: function () { opDelMov(saved); } });
   }
 
+  /* ---- Deudas ---- */
+  function catDeudas() {
+    var m = catMap();
+    if (m['c-deudas'] && m['c-deudas'].t === 'g') return { id: 'c-deudas', isNew: false };
+    var c = catList('g').filter(function (x) { return norm(x.n) === 'deudas'; })[0];
+    if (c) return { id: c.id, isNew: false };
+    return { id: 'c-deudas', isNew: true, cat: { id: 'c-deudas', n: 'Deudas', t: 'g', k: 'f', lim: null, ord: nextOrd() } };
+  }
+  function mesesTxt(n) { if (n == null) return '—'; if (n === 0) return 'Pagada'; var a = Math.floor(n / 12), m = n % 12; return (a ? a + (a === 1 ? ' año' : ' años') : '') + (a && m ? ' y ' : '') + (m ? m + (m === 1 ? ' mes' : ' meses') : ''); }
+  function finTxt(n) { if (n == null) return '—'; return mesL(addMonths(curKey(), n)); }
+  function finC(n) { if (n == null) return '—'; var k = addMonths(curKey(), n); return cap(mesC(k)) + ' ' + k.slice(0, 4); }
+  function extraVal() { return ui.extra != null ? ui.extra : (typeof (cfg().prefs || {}).extraDeuda === 'number' ? cfg().prefs.extraDeuda : 50); }
+  function dueInfo(s) {
+    var d = s.d;
+    if (s.saldo <= 0.005) return { pill: '<span class="pill ok">✓ Pagada por completo</span>', w: 0 };
+    if (s.paidThisMonth) return { pill: '<span class="pill ok">✓ Cuota de ' + esc(mesN(curKey())) + ' pagada</span>', w: 0 };
+    if (!d.dia) return { pill: '<span class="pill neutral">Pendiente este mes</span>', w: 1 };
+    var now = new Date(), dim = daysIn(curKey()), day = Math.min(d.dia, dim), diff = day - now.getDate();
+    if (diff < 0) return { pill: '<span class="pill bad">! Vencida hace ' + (-diff) + (diff === -1 ? ' día' : ' días') + '</span>', w: 3 };
+    if (diff === 0) return { pill: '<span class="pill warn">! Vence hoy</span>', w: 2 };
+    if (diff <= 5) return { pill: '<span class="pill warn">Vence en ' + diff + (diff === 1 ? ' día' : ' días') + '</span>', w: 2 };
+    return { pill: '<span class="pill neutral">Vence el día ' + day + '</span>', w: 1 };
+  }
+  function ingresoMensual() {
+    var cur = curKey(), ks = A.months.filter(function (k) { return k < cur; }).slice(-3);
+    if (ks.length) return sum(ks.map(function (k) { return A.agg[k].ing; })) / ks.length;
+    return A.pred.can ? A.pred.ing : 0;
+  }
+  function planCompare(extra) {
+    var D = A.deu, items = D.items;
+    if (!items.length) return null;
+    var base = simPlan(items, 0, 'aval', false), aval = simPlan(items, extra, 'aval', true), snow = simPlan(items, extra, 'snow', true);
+    var best = aval.never ? snow : snow.never ? aval : (snow.interest < aval.interest - 0.5 || (Math.abs(snow.interest - aval.interest) <= 0.5 && snow.months < aval.months) ? snow : aval);
+    return { base: base, aval: aval, snow: snow, best: best, bestName: best === snow ? 'snow' : 'aval' };
+  }
+  function renderDeudas() {
+    var D = A.deu, has = D.list.length > 0, extra = extraVal();
+    var active = D.list.filter(function (s) { return s.saldo > 0.005; });
+    var totPrest = sum(active.map(function (s) { return s.saldo; })), totCards = sum(D.cards.map(function (s) { return s.deuda; }));
+    var cuotas = sum(active.map(function (s) { return s.cuota || 0; }));
+    var intPag = sum(D.list.map(function (s) { return s.intPag; }));
+    var P = planCompare(extra);
+    var h = cardH('Control de deudas', has || D.cards.length ? 'Todo lo que debes, lo que pagas al mes y cuándo terminas.' : '');
+    if (!has && !D.cards.length) {
+      h += '<p class="empty">Registra tus préstamos y compras a cuotas: cuánto debes hoy, la cuota y cuántas cuotas llevas. Te digo cuánto apartar cada mes, cuándo terminas, cuánto pagas de interés y cómo terminar antes.</p>';
+    } else {
+      h += '<div class="tj-sum">' +
+        '<div class="stat"><div class="lab">Deuda total</div><div class="val">' + money(totPrest + totCards) + '</div></div>' +
+        '<div class="stat"><div class="lab">Apartar al mes</div><div class="val">' + money(cuotas) + '</div></div>' +
+        '<div class="stat"><div class="lab">Intereses pagados</div><div class="val">' + money(intPag) + '</div></div>' +
+        (P ? '<div class="stat"><div class="lab">Intereses por pagar</div><div class="val">' + (P.base.never ? '—' : '≈ ' + money(P.base.interest)) + '</div></div>' +
+          '<div class="stat"><div class="lab">Libre de deudas</div><div class="val">' + (P.base.never ? 'Nunca' : esc(finC(P.base.months))) + '</div></div>' : '') + '</div>';
+      if (totCards > 0) h += '<p class="fine">Incluye ' + money(totCards) + ' de tarjetas de crédito.</p>';
+      if (P && P.base.series.length > 1) {
+        h += '<div class="legend" style="margin-top:14px"><span><i class="kl kl-out"></i>Solo cuotas</span>' + (extra > 0 ? '<span><i class="kl kl-save"></i>Con ' + moneyR(extra) + ' extra al mes</span>' : '') + '</div>';
+        h += '<div class="chart-wrap" id="ch-deuda"><div class="tip" hidden></div></div>';
+      }
+      var mix = active.map(function (s) { return { n: s.d.n, v: s.saldo }; }).concat(D.cards.map(function (s) { return { n: s.c.n + ' (tarjeta)', v: s.deuda }; })).sort(function (a, b) { return b.v - a.v; });
+      if (mix.length > 1) {
+        var mx = mix[0].v, tt = sum(mix.map(function (x) { return x.v; }));
+        h += '<h3 class="sub-t">Cómo se reparte lo que debes</h3><div class="cbars">' + mix.map(function (x) {
+          return '<div class="cbar"><div class="cbar-top"><span class="cbar-name">' + esc(x.n) + '</span><span class="cbar-val">' + money(x.v) + '</span></div><div class="cbar-track"><span class="cbar-fill" style="width:' + (x.v / mx * 100).toFixed(2) + '%"></span></div><div class="cbar-meta"><span>' + pctS(x.v / tt) + ' del total</span></div></div>';
+        }).join('') + '</div>';
+      }
+    }
+    $('#d-resumen').innerHTML = h;
+    var ch = $('#ch-deuda');
+    if (ch && P) drawDeuda(ch, P, extra);
+    $('#d-list').innerHTML = D.list.map(deudaTileHTML).join('');
+    $('#d-list').hidden = !has;
+    $('#d-apartar').innerHTML = apartarHTML(active);
+    $('#d-apartar').hidden = !has && !D.cards.length;
+    renderPlanCard(P, extra);
+    $('#d-plan').hidden = !P;
+    $('#d-tips').innerHTML = tipsHTML(P, extra);
+    $('#d-tips').hidden = !has && !D.cards.length;
+    syncDeudaForm();
+  }
+  function deudaTileHTML(s) {
+    var d = s.d, du = dueInfo(s), done = s.saldo <= 0.005;
+    var h = '<article class="tj' + (done ? ' tj-done' : '') + '"><div class="tj-h"><div class="tj-name"><span class="tj-n">' + esc(d.n) + '</span><span class="pill neutral">' + DTIPO[d.tipo] + '</span>' + du.pill + '</div>' +
+      '<button class="link" type="button" data-act="deuda-edit" data-id="' + esc(d.id) + '">Editar</button></div>';
+    h += '<div class="tj-lab">Debes hoy</div><div class="tj-big">' + money(s.saldo) + '</div>';
+    if (s.prog != null) {
+      h += '<div class="cbar-track tj-meter"><span class="cbar-fill save" style="width:' + (s.prog * 100).toFixed(1) + '%"></span></div>' +
+        '<div class="cbar-meta"><span>' + (d.nTot ? 'Cuota ' + Math.min(s.pag, d.nTot) + ' de ' + d.nTot + ' · ' : '') + pctS(s.prog) + ' pagado</span></div>';
+    }
+    var rest = s.restantes;
+    h += '<dl class="tj-stats">' +
+      '<div><dt>Cuota mensual</dt><dd>' + (d.cuota ? money(d.cuota) : '—') + '</dd></div>' +
+      '<div><dt>Te faltan</dt><dd>' + (done ? '¡Nada!' : s.base.never ? 'La cuota no cubre el interés' : rest == null ? 'Agrega la cuota' : rest + (rest === 1 ? ' cuota' : ' cuotas')) + '</dd></div>' +
+      '<div><dt>Terminas en</dt><dd>' + (done ? '—' : rest == null ? '—' : esc(cap(finTxt(rest)))) + '</dd></div>' +
+      '<div><dt>Tasa anual</dt><dd>' + (d.tasa ? String(d.tasa).replace(/\.0+$/, '') + '%' : s.mode === 'f' ? 'Incluida en la cuota' : 'Sin interés') + '</dd></div>' +
+      '<div><dt>Interés pagado</dt><dd>' + money(s.intPag) + '</dd></div>' +
+      '<div><dt>Interés por pagar</dt><dd>' + (done ? money(0) : s.base.interest == null ? '—' : '≈ ' + money(s.base.interest)) + '</dd></div>' +
+      '</dl>';
+    if (s.base.never) h += '<div class="alert"><span class="pill bad">! Atención</span><span>Con esta cuota la deuda nunca baja: el interés del mes es ≈ ' + money(s.saldo * s.r) + '. Habla con tu banco o paga más cada mes.</span></div>';
+    if (s.mode === 'f' && !done) h += '<p class="fine">Pagarás ' + money(d.cuota * d.nTot) + ' en total por algo que costaba ' + money(d.monto) + ': ' + money(d.cuota * d.nTot - d.monto) + ' de interés (' + pctS((d.cuota * d.nTot - d.monto) / d.monto) + ' más).</p>';
+    if (s.pays.length) {
+      h += '<div class="d-pays"><span class="lbl">Últimos pagos</span>' + s.pays.slice(-3).reverse().map(function (p) {
+        return '<button class="d-pay" type="button" data-act="edit" data-id="' + esc(p.id) + '"><span>' + esc(fechaCorta(p.f)) + (p.dx ? ' · abono extra' : '') + '</span><b>' + money(p.m) + '</b></button>';
+      }).join('') + '</div>';
+    }
+    if (!done) h += '<div class="btn-row tj-actions"><button class="btn btn-primary btn-sm" type="button" data-act="dpago" data-id="' + esc(d.id) + '">Marcar pago</button><button class="btn btn-sm" type="button" data-act="dpago-x" data-id="' + esc(d.id) + '">Abono extra</button></div>';
+    return h + '</article>';
+  }
+  function apartarHTML(active) {
+    var D = A.deu, rows = active.filter(function (s) { return s.cuota > 0; }).map(function (s) { return { s: s, du: dueInfo(s) }; }).sort(function (a, b) { return b.du.w - a.du.w || (a.s.d.dia || 99) - (b.s.d.dia || 99); });
+    var falta = sum(rows.filter(function (r) { return !r.s.paidThisMonth; }).map(function (r) { return r.s.cuota; }));
+    var total = sum(rows.map(function (r) { return r.s.cuota; }));
+    var h = cardH('Cuánto apartar en ' + esc(mesN(curKey())), 'Las cuotas del mes y lo que te falta pagar.');
+    if (rows.length) {
+      h += '<p class="pred-big">' + (falta > 0 ? 'Te falta pagar <b>' + money(falta) + '</b>' : '<b>Todo pagado</b> este mes') + '</p>';
+      h += '<div class="meter-wrap"><div class="meter"><span class="m-spent" style="background:var(--c-save);width:' + (total ? (total - falta) / total * 100 : 0).toFixed(1) + '%"></span></div></div>';
+      h += '<div class="legend"><span><i class="key key-save"></i>Pagado ' + money(total - falta) + ' de ' + money(total) + '</span></div>';
+      h += '<div class="sa-rows">' + rows.map(function (r) {
+        return '<div class="sa-row d-row"><span class="sa-row-m">' + esc(r.s.d.n) + '</span>' + r.du.pill + '<span class="sa-row-v">' + money(r.s.cuota) + '</span></div>';
+      }).join('') + '</div>';
+      var inc = ingresoMensual();
+      if (inc > 0) {
+        var dti = total / inc;
+        h += '<p class="fine">Tus cuotas son el <b>' + pctS(dti) + '</b> de tu ingreso mensual (≈ ' + moneyR(inc) + '). ' + (dti > 0.36 ? 'Más del 36% se considera alto.' : dti > 0.2 ? 'Está en un rango manejable; menos del 20% es lo ideal.' : 'Es un nivel sano.') + '</p>';
+      }
+    } else h += '<p class="empty">Agrega la cuota mensual de tus deudas para saber cuánto apartar.</p>';
+    if (D.cards.length) h += '<p class="fine">Tarjetas: ' + D.cards.map(function (s) { return esc(s.c.n) + ' ' + money(s.deuda); }).join(' · ') + '. Pagar el total evita intereses.</p>';
+    return h;
+  }
+  function renderPlanCard(P, extra) {
+    var el = $('#d-plan');
+    if (!P) { el.innerHTML = ''; return; }
+    var h = cardH('Termina antes pagando extra', 'Mueve el control y mira cuánto ahorras.');
+    h += '<div class="slider-row"><label for="d-extra">Extra al mes</label><input type="range" id="d-extra" min="0" max="500" step="5" value="' + extra + '"><output id="d-extra-out" for="d-extra">' + moneyR(extra) + '</output></div>';
+    h += '<div id="d-plan-body">' + planBodyHTML(P, extra) + '</div>';
+    el.innerHTML = h;
+  }
+  function planBodyHTML(P, extra) {
+    var b = P.base, best = P.best, h = '';
+    if (b.never && best.never) return '<p class="empty">Con estos pagos alguna deuda nunca termina de bajar. Sube el extra o revisa las cuotas.</p>';
+    var ahorro = b.never ? null : round2(b.interest - best.interest), menos = b.never || best.never ? null : b.months - best.months;
+    if (extra > 0 && !best.never) {
+      h += '<p class="pred-big">' + (menos > 0 ? 'Terminas <b>' + mesesTxt(menos) + ' antes</b>' : 'Terminas en la misma fecha') + (ahorro > 0.5 ? ' y ahorras <b>' + money(ahorro) + '</b> en intereses' : '') + '</p>';
+    } else if (!b.never) h += '<p class="pred-big">Solo con las cuotas terminas en <b>' + esc(finTxt(b.months)) + '</b></p>';
+    var rows = [['Solo cuotas', b, ''], ['Avalancha', P.aval, 'Primero la de mayor interés'], ['Bola de nieve', P.snow, 'Primero la más pequeña']];
+    h += '<div class="table-wrap"><table class="ledger-t d-plan-t" style="min-width:0"><thead><tr><th scope="col">Plan</th><th scope="col">Terminas</th><th scope="col">Intereses</th></tr></thead><tbody>' + rows.map(function (r, i) {
+      var isBest = i > 0 && extra > 0 && r[1] === best;
+      return '<tr class="' + (isBest ? 'sel' : '') + '"><th scope="row">' + r[0] + (isBest ? ' <span class="pill ok">✓ Mejor</span>' : '') + (r[2] ? '<span class="tag" style="display:block;margin:2px 0 0;white-space:normal">' + r[2] + '</span>' : '') + '</th><td>' + (r[1].never ? 'Nunca' : esc(finC(r[1].months))) + '</td><td>' + (r[1].never ? '—' : money(r[1].interest)) + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+    if (extra > 0 && !best.never) {
+      var ord = A.deu.items.slice().sort(function (x, y) { return (best.doneAt[x.id] || 999) - (best.doneAt[y.id] || 999); });
+      h += '<h3 class="sub-t">Orden en que terminas (' + (P.bestName === 'snow' ? 'bola de nieve' : 'avalancha') + ')</h3><ol class="d-order">' + ord.map(function (x) {
+        return '<li><span>' + esc(x.n) + (x.card ? ' (tarjeta)' : '') + '</span><b>' + esc(cap(finTxt(best.doneAt[x.id]))) + '</b></li>';
+      }).join('') + '</ol>';
+      h += '<p class="fine">' + (P.bestName === 'snow' ? 'Bola de nieve: pagas el extra a la deuda más pequeña; al terminarla, su cuota se suma a la siguiente.' : 'Avalancha: pagas el extra a la deuda con mayor interés; al terminarla, su cuota se suma a la siguiente. Es la que menos interés cobra.') + ' Las tarjetas se calculan con un pago mínimo del 5%.</p>';
+    }
+    return h;
+  }
+  function tipsHTML(P, extra) {
+    var D = A.deu, tips = [], active = D.list.filter(function (s) { return s.saldo > 0.005; });
+    active.filter(function (s) { return dueInfo(s).w === 3; }).forEach(function (s) { tips.push({ w: 9, pill: '<span class="pill bad">! Urgente</span>', t: 'La cuota de <b>' + esc(s.d.n) + '</b> está vencida. Pagarla hoy evita recargos e intereses moratorios.' }); });
+    active.filter(function (s) { return s.base.never; }).forEach(function (s) { tips.push({ w: 8, pill: '<span class="pill bad">! Atención</span>', t: 'La cuota de <b>' + esc(s.d.n) + '</b> no alcanza para cubrir el interés. Necesitas pagar más de ' + money(s.saldo * s.r) + ' al mes para que baje.' }); });
+    D.cards.filter(function (s) { return s.c.tasa; }).forEach(function (s) { tips.push({ w: 6, pill: '<span class="pill warn">Tarjeta</span>', t: '<b>' + esc(s.c.n) + '</b> cobra ' + s.c.tasa + '% anual: ≈ ' + money(s.interes) + ' de interés al mes. Suele ser la deuda más cara; págala completa o primero.' }); });
+    var rated = active.filter(function (s) { return s.d.tasa && s.cuota; }).sort(function (a, b) { return b.d.tasa - a.d.tasa; });
+    if (rated.length) {
+      var top = rated[0];
+      [25, 50, 100].forEach(function (x) {
+        var r = simOne(top, x);
+        if (!r.never && r.months != null && top.base.months != null && !top.base.never) {
+          var sv = round2(top.base.interest - r.interest), mm = top.base.months - r.months;
+          if (sv > 0.5 || mm > 0) tips.push({ w: 5 - x / 100, pill: '<span class="pill ok">+' + moneyR(x) + '/mes</span>', t: 'Pagando ' + moneyR(x) + ' extra al mes a <b>' + esc(top.d.n) + '</b> (' + top.d.tasa + '%) terminas ' + (mm > 0 ? mesesTxt(mm) + ' antes' : 'igual') + (sv > 0.5 ? ' y ahorras <b>' + money(sv) + '</b> de interés' : '') + '.' });
+        }
+      });
+    }
+    active.filter(function (s) { return s.mode === 'f'; }).forEach(function (s) { tips.push({ w: 3, pill: '<span class="pill neutral">Cuotas</span>', t: 'En <b>' + esc(s.d.n) + '</b> el interés va incluido en la cuota. Pregunta si te descuentan intereses por pagar antes; si no, adelantar pagos no te ahorra dinero.' }); });
+    try {
+      var S = ahorroData();
+      if (S.total >= 5 && P && !P.base.never) {
+        var sim = simPlan(D.items, Math.round(S.total), 'aval', true);
+        if (!sim.never) { var sv2 = round2(P.base.interest - sim.interest), m2 = P.base.months - sim.months; if (sv2 > 0.5 || m2 > 0) tips.push({ w: 4, pill: '<span class="pill ok">Recorte</span>', t: 'Si recortas un ' + Math.round(S.p * 100) + '% en gastos recortables (≈ ' + moneyR(S.total) + ' al mes) y lo mandas a tus deudas, terminas ' + (m2 > 0 ? mesesTxt(m2) + ' antes' : 'igual') + (sv2 > 0.5 ? ' y ahorras ' + money(sv2) + ' de interés' : '') + '.' }); }
+      }
+    } catch (e) { /* sin datos */ }
+    var inc = ingresoMensual(), cuotas = sum(active.map(function (s) { return s.cuota || 0; }));
+    if (inc > 0 && cuotas / inc > 0.36) tips.push({ w: 7, pill: '<span class="pill warn">! Carga alta</span>', t: 'Tus cuotas son el ' + pctS(cuotas / inc) + ' de tu ingreso. Evita nuevas deudas hasta bajar de 36%.' });
+    if (A.sav && A.sav.saldo > 0 && rated.length && rated[0].d.tasa >= 15) tips.push({ w: 2, pill: '<span class="pill neutral">Ahorros</span>', t: 'Tienes ' + money(A.sav.saldo) + ' ahorrados y una deuda al ' + rated[0].d.tasa + '%. Guarda tu fondo de emergencia, pero lo que sobre rinde más pagando esa deuda.' });
+    var h = cardH('Cómo mejorar', 'Ideas para pagar menos y terminar antes.');
+    if (!tips.length) return h + '<p class="empty">Agrega la tasa y la cuota de tus deudas para recibir recomendaciones.</p>';
+    return h + '<div class="alerts">' + tips.sort(function (a, b) { return b.w - a.w; }).slice(0, 7).map(function (x) { return '<div class="alert">' + x.pill + '<span>' + x.t + '</span></div>'; }).join('') + '</div>';
+  }
+  function drawDeuda(wrap, P, extra) {
+    $$('svg', wrap).forEach(function (n) { n.remove(); });
+    var a = P.base.series, b = extra > 0 ? P.best.series : null;
+    var N = Math.min(240, Math.max(a.length, b ? b.length : 0) - 1);
+    if (N < 1) return;
+    var max = Math.max.apply(null, a.concat(b || []).concat([10]));
+    var W = Math.max(260, Math.round(wrap.clientWidth || 320)), H = 220, ml = 50, mr = 14, mt = 14, mb = 26, pw = W - ml - mr, ph = H - mt - mb;
+    var step = niceStep(max, 4), top = Math.ceil(max / step - 1e-9) * step;
+    function X(i) { return f2(ml + i / N * pw); }
+    function Y(v) { return f2(mt + ph - v / top * ph); }
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc('Proyección de deuda: solo con cuotas terminas en ' + finTxt(P.base.months) + (b ? '; con extra en ' + finTxt(P.best.months) : '')) + '">';
+    for (var v = 0; v <= top + 1e-6; v += step) { var yy = Math.round(Y(v)) + 0.5; s += '<line class="' + (v === 0 ? 'gl-base' : 'gl') + '" x1="' + ml + '" x2="' + (W - mr) + '" y1="' + yy + '" y2="' + yy + '"/><text class="ax" x="' + (ml - 8) + '" y="' + (yy + 3.5) + '" text-anchor="end">' + moneyK(v) + '</text>'; }
+    var ticks = W < 520 ? 2 : 4, used = {};
+    for (var t = 0; t <= ticks; t++) { var i0 = Math.round(N * t / ticks); if (used[i0]) continue; used[i0] = 1; var kk = addMonths(curKey(), i0); s += '<text class="ax" x="' + X(i0) + '" y="' + (H - 8) + '" text-anchor="' + (t === 0 ? 'start' : t === ticks ? 'end' : 'middle') + '">' + mesC(kk) + ' ' + kk.slice(2, 4) + '</text>'; }
+    function path(arr) { var d = ''; for (var i = 0; i <= Math.min(N, arr.length - 1); i++) d += (i ? 'L' : 'M') + X(i) + ',' + Y(arr[i]); return d; }
+    s += '<path class="area-out" d="' + path(a) + 'L' + X(Math.min(N, a.length - 1)) + ',' + Y(0) + 'L' + X(0) + ',' + Y(0) + 'Z"/>';
+    s += '<path class="ln-out" d="' + path(a) + '"/>';
+    if (b) s += '<path class="ln-out" style="stroke:var(--c-save)" d="' + path(b) + '"/>';
+    s += '<line class="xhair" id="dx-line" x1="0" x2="0" y1="' + mt + '" y2="' + (mt + ph) + '" visibility="hidden"/><rect class="overlay" id="dx-ov" tabindex="0" x="' + ml + '" y="' + mt + '" width="' + pw + '" height="' + ph + '" aria-label="Recorre los meses con las flechas"/></svg>';
+    wrap.insertAdjacentHTML('beforeend', s);
+    var svg = $('svg', wrap), tip = $('.tip', wrap), ln = $('#dx-line', svg), ov = $('#dx-ov', svg), cur = 0;
+    function show(i) {
+      cur = clamp(i, 0, N);
+      ln.setAttribute('x1', X(cur)); ln.setAttribute('x2', X(cur)); ln.setAttribute('visibility', 'visible');
+      var k = addMonths(curKey(), cur), h = '<div class="tip-h">' + esc(mesL(k)) + '</div>' + tipRow('kl-out', money(a[Math.min(cur, a.length - 1)]), 'solo cuotas');
+      if (b) h += tipRow('kl-save', money(b[Math.min(cur, b.length - 1)]), 'con extra');
+      tip.innerHTML = h; tip.hidden = false;
+      var r = svg.getBoundingClientRect(), wr = wrap.getBoundingClientRect(), sc = r.width / W;
+      place(tip, wrap, r.left - wr.left + X(cur) * sc, r.top - wr.top + mt * sc + 4);
+    }
+    function idx(e) { var r = svg.getBoundingClientRect(), px = (e.clientX - r.left) * (W / r.width); return Math.round((px - ml) / pw * N); }
+    ov.addEventListener('pointermove', function (e) { show(idx(e)); });
+    ov.addEventListener('pointerdown', function (e) { show(idx(e)); });
+    svg.addEventListener('pointerleave', function (e) { if (e.pointerType !== 'touch') { tip.hidden = true; ln.setAttribute('visibility', 'hidden'); } });
+    ov.addEventListener('focus', function () { show(cur); });
+    ov.addEventListener('blur', function () { tip.hidden = true; ln.setAttribute('visibility', 'hidden'); });
+    ov.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft') { e.preventDefault(); show(cur - 1); } else if (e.key === 'ArrowRight') { e.preventDefault(); show(cur + 1); } });
+  }
+  var DF = ['dd-saldo', 'dd-pag', 'dd-int'];
+  function syncDeudaForm() {
+    var ed = ui.editDeuda ? deudaList().filter(function (x) { return x.id === ui.editDeuda; })[0] : null;
+    if (ui.editDeuda && !ed) ui.editDeuda = null;
+    var f = $('#dd-form');
+    if (f.getAttribute('data-for') === (ed ? ed.id : '')) return;
+    f.setAttribute('data-for', ed ? ed.id : '');
+    var st = ed ? A.deu.by[ed.id] : null;
+    $('#dd-title').textContent = ed ? 'Editar ' + ed.n : 'Agregar deuda';
+    $('#dd-n').value = ed ? ed.n : '';
+    $('#dd-t-' + (ed ? ed.tipo : 'p')).checked = true;
+    $('#dd-monto').value = ed && ed.monto != null ? ed.monto : '';
+    $('#dd-cuota').value = ed && ed.cuota ? ed.cuota : '';
+    $('#dd-ntot').value = ed && ed.nTot ? ed.nTot : '';
+    $('#dd-tasa').value = ed && ed.tasa ? ed.tasa : '';
+    $('#dd-dia').value = ed && ed.dia ? ed.dia : '';
+    $('#dd-saldo').value = st ? st.saldo.toFixed(2) : '';
+    $('#dd-pag').value = st ? st.pag : '';
+    $('#dd-int').value = st ? st.intPag.toFixed(2) : '';
+    DF.forEach(function (i) { $('#' + i).setAttribute('data-orig', $('#' + i).value); });
+    $('#dd-save').textContent = ed ? 'Guardar cambios' : 'Agregar deuda';
+    $('#dd-cancel').hidden = !ed; $('#dd-del').hidden = !ed;
+    $('#dd-err').textContent = '';
+  }
+  function saveDeuda(e) {
+    e.preventDefault();
+    var err = $('#dd-err'), ed = ui.editDeuda ? deudaList().filter(function (x) { return x.id === ui.editDeuda; })[0] : null;
+    function opt(id, label, intOnly) {
+      var t = $('#' + id).value.trim().replace('%', '');
+      if (!t) return null;
+      var v = intOnly ? parseInt(t, 10) : parseMonto(t);
+      if (!isFinite(v) || v < 0) throw new Error('Revisa el campo «' + label + '».');
+      return v;
+    }
+    try {
+      var n = $('#dd-n').value.trim();
+      if (!n) throw new Error('Ponle un nombre, por ejemplo «Préstamo del carro» o «TV a cuotas».');
+      var monto = opt('dd-monto', 'Monto original'), cuota = opt('dd-cuota', 'Cuota mensual'), nTot = opt('dd-ntot', 'Total de cuotas', true);
+      var tt = $('#dd-tasa').value.trim().replace('%', '').replace(',', '.'), tasa = tt ? parseFloat(tt) : null;
+      if (tt && !(tasa >= 0 && tasa < 400)) throw new Error('La tasa debe ser un porcentaje anual, por ejemplo 18.');
+      var dia = opt('dd-dia', 'Día de pago', true);
+      if (dia != null && (dia < 1 || dia > 31)) throw new Error('El día de pago va del 1 al 31.');
+      var changed = !ed || DF.some(function (i) { return $('#' + i).value.trim() !== $('#' + i).getAttribute('data-orig'); });
+      var saldo0 = ed && !changed ? ed.saldo0 : opt('dd-saldo', 'Lo que debes hoy');
+      var pag0 = ed && !changed ? ed.pag0 : (opt('dd-pag', 'Cuotas pagadas', true) || 0);
+      var int0 = ed && !changed ? ed.int0 : (opt('dd-int', 'Interés pagado') || 0);
+      if (saldo0 == null && !(cuota && nTot)) throw new Error('Escribe lo que debes hoy, o la cuota y el total de cuotas para calcularlo.');
+      if (nTot && pag0 > nTot) throw new Error('Las cuotas pagadas no pueden ser más que el total.');
+      var f0 = ed && !changed ? ed.f0 : ed ? iso(new Date(Date.now() + 864e5)) : iso(new Date());
+    } catch (x) { err.textContent = x.message; return; }
+    if (!ready) { err.textContent = 'Conectando con tu libreta… intenta en un momento.'; return; }
+    var d = { id: ed ? ed.id : uid('d-'), n: cap(n), tipo: $('#dd-t-c').checked ? 'c' : $('#dd-t-o').checked ? 'o' : 'p', monto: monto, tasa: tasa > 0 ? tasa : null, cuota: cuota > 0 ? cuota : null, nTot: nTot > 0 ? nTot : null, pag0: pag0, saldo0: saldo0, int0: int0, dia: dia, f0: f0, ord: ed ? ed.ord : Date.now() };
+    opPutDeuda(d);
+    ui.editDeuda = null;
+    $('#dd-form').setAttribute('data-for', 'x');
+    toast(ed ? 'Deuda actualizada.' : 'Deuda agregada: ' + d.n + '.');
+  }
+  var DP = { edit: null };
+  function openPagoDeuda(id, edit, extra) {
+    var list = deudaList();
+    if (!list.length) { toast('Primero agrega una deuda.'); return; }
+    DP.edit = edit || null;
+    $('#dp-dj').innerHTML = list.map(function (d) { return '<option value="' + esc(d.id) + '">' + esc(d.n) + '</option>'; }).join('');
+    $('#dp-dj').value = id && list.some(function (d) { return d.id === id; }) ? id : list[0].id;
+    $('#dp-met').innerHTML = '<option value="">Sin especificar</option>' + metList().map(function (m) { return '<option value="' + esc(m.id) + '">' + esc(m.n) + '</option>'; }).join('');
+    var ult = (cfg().prefs || {}).ultMet;
+    $('#dp-met').value = edit ? (edit.p && metMap()[edit.p] ? edit.p : '') : (ult && metMap()[ult] ? ult : '');
+    $('#dp-k-' + ((edit ? edit.dx : extra) ? 'x' : 'c')).checked = true;
+    $('#dp-fecha').value = edit ? edit.f : iso(new Date());
+    $('#dp-err').textContent = '';
+    $('#dp-title').textContent = edit ? 'Editar pago' : 'Marcar pago';
+    $('#dp-del').hidden = !edit;
+    $('#dp-monto').value = edit ? edit.m.toFixed(2) : '';
+    dpSync(!edit);
+    showDlg($('#dlg-dp'));
+  }
+  function dpSync(fill) {
+    var s = A.deu.by[$('#dp-dj').value], extra = $('#dp-k-x').checked, h = '';
+    if (s) {
+      if (fill) $('#dp-monto').value = !extra && s.cuota ? Math.min(s.cuota, s.saldo + s.saldo * s.r).toFixed(2) : '';
+      h = 'Debes <b>' + money(s.saldo) + '</b>' + (s.d.nTot ? ' · llevas ' + Math.min(s.pag, s.d.nTot) + ' de ' + s.d.nTot + ' cuotas' : '') + '.';
+      if (extra) h += ' Un abono extra va directo a reducir lo que debes.';
+    }
+    $('#dp-hint').innerHTML = h; $('#dp-hint').hidden = !h;
+    $('#dp-ah').hidden = !isAhMet($('#dp-met').value);
+  }
+  function savePagoDeuda(e) {
+    e.preventDefault();
+    var err = $('#dp-err'), m = parseMonto($('#dp-monto').value), dj = $('#dp-dj').value, s = A.deu.by[dj], dx = $('#dp-k-x').checked ? 1 : 0;
+    if (!(m > 0)) { err.textContent = 'Escribe cuánto pagaste.'; $('#dp-monto').focus(); return; }
+    if (!ready) { err.textContent = 'Conectando con tu libreta… intenta en un momento.'; return; }
+    var old = DP.edit, cd = catDeudas(), d = s ? s.d : { n: 'Deuda' };
+    var num = s ? (old && !old.dx ? null : s.pag + 1) : null;
+    var desc = dx ? 'Abono extra · ' + d.n : (num && d.nTot ? 'Cuota ' + Math.min(num, d.nTot) + ' de ' + d.nTot + ' · ' + d.n : old ? old.d : 'Cuota · ' + d.n);
+    var mov = { id: old ? old.id : uid('m'), t: 'g', m: m, f: $('#dp-fecha').value || iso(new Date()), c: cd.id, p: $('#dp-met').value, d: desc, dj: dj, dx: dx, ts: old ? old.ts : Date.now(), e: 0 };
+    opSaveMov(mov, old, cd.isNew ? cd.cat : null, null);
+    closeDlg($('#dlg-dp'));
+    var s2 = analyze().deu.by[dj];
+    var saved = Object.assign({ k: mov.f.slice(0, 7) }, mov);
+    toast('Pago de ' + money(m) + ' registrado.' + (s2 ? (s2.saldo <= 0.005 ? ' ¡Terminaste de pagar ' + d.n + '!' : ' Debes ' + money(s2.saldo) + (s2.restantes ? '; te faltan ' + s2.restantes + (s2.restantes === 1 ? ' cuota' : ' cuotas') : '') + '.') : ''), old ? null : { label: 'Deshacer', fn: function () { opDelMov(saved); } });
+  }
+  function opPutDeuda(d) {
+    var body = { n: d.n, tipo: d.tipo, monto: d.monto, tasa: d.tasa, cuota: d.cuota, nTot: d.nTot, pag0: d.pag0, saldo0: d.saldo0, int0: d.int0, dia: d.dia, f0: d.f0, ord: d.ord };
+    commit(function (D) { var c = ensureConfig(D); if (!c.deudas) c.deudas = {}; c.deudas[d.id] = clone(body); }, function () {
+      var p = { deudas: {} }; p.deudas[d.id] = body; return [wConfig(p)];
+    });
+  }
+  function opDelDeuda(id) {
+    commit(function (D) { var c = ensureConfig(D); if (!c.deudas) c.deudas = {}; c.deudas[id] = null; }, function () {
+      var p = { deudas: {} }; p.deudas[id] = null; return [wConfig(p)];
+    });
+  }
+
   /* ---- Movimientos ---- */
   function fillSelect(sel, opts, val) {
     var sig = JSON.stringify(opts);
@@ -2839,6 +3365,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     var m = A.movs.filter(function (x) { return x.id === id; })[0];
     if (!m) return;
     if (m.t === 'p') { openPago(m.tj, m); return; }
+    if (m.dj && A.deu.by[m.dj]) { openPagoDeuda(m.dj, m); return; }
     F.edit = m; F.catTouched = true; F.metTouched = true;
     $('#f-mov').reset();
     $('#dm-monto').value = m.m.toFixed(2);
@@ -3107,6 +3634,13 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
         case 'met-close': ui.editMet = null; renderCats(true); break;
         case 'met-del': delMet(id); break;
         case 'pago': openPago(id, null); break;
+        case 'dpago': openPagoDeuda(id, null, false); break;
+        case 'dpago-x': openPagoDeuda(id, null, true); break;
+        case 'close-dp': closeDlg($('#dlg-dp')); break;
+        case 'del-dp': if (DP.edit) { var de = DP.edit; closeDlg($('#dlg-dp')); opDelMov(de); toast('Pago eliminado.', { label: 'Deshacer', fn: function () { opSaveMov(Object.assign({}, de), null, null, null); } }); } break;
+        case 'deuda-edit': ui.editDeuda = id; syncDeudaForm(); var dfm = $('#d-form'); if (dfm) dfm.scrollIntoView({ block: 'start' }); setTimeout(function () { $('#dd-n').focus(); }, 50); break;
+        case 'deuda-cancel': ui.editDeuda = null; syncDeudaForm(); break;
+        case 'deuda-del': if (ui.editDeuda) { var did = ui.editDeuda, dn = (deudaList().filter(function (x) { return x.id === did; })[0] || {}).n; confirmar({ titulo: 'Eliminar «' + dn + '»', texto: 'Se borra la deuda. Los pagos que registraste se quedan como gastos en tus movimientos.', ok: 'Eliminar', peligro: true }).then(function (r) { if (r && ready) { ui.editDeuda = null; opDelDeuda(did); toast('Deuda eliminada.'); } }); } break;
         case 'pg-todo': { var stt = A.tj.by[$('#pg-tj').value]; if (stt) $('#pg-monto').value = stt.deuda.toFixed(2); break; }
         case 'close-pago': closeDlg($('#dlg-pago')); break;
         case 'del-pago': if (PG.edit) { var pe = PG.edit; closeDlg($('#dlg-pago')); opDelMov(pe); toast('Pago eliminado.', { label: 'Deshacer', fn: function () { opSaveMov(Object.assign({}, pe), null, null, null); } }); } break;
@@ -3182,6 +3716,19 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     });
     $$('input[name="cn-t"]').forEach(function (r) { r.addEventListener('change', function () { $('#cn-k').hidden = !$('#cn-t-g').checked; }); });
     $('#tj-form').addEventListener('submit', saveCard);
+    $('#dd-form').addEventListener('submit', saveDeuda);
+    $('#f-dp').addEventListener('submit', savePagoDeuda);
+    $('#dp-dj').addEventListener('change', function () { dpSync(!DP.edit); });
+    $$('input[name="dp-k"]').forEach(function (r) { r.addEventListener('change', function () { dpSync(!DP.edit); }); });
+    $('#dp-met').addEventListener('change', function () { dpSync(false); });
+    $('#d-plan').addEventListener('input', function (e) {
+      if (e.target.id !== 'd-extra') return;
+      ui.extra = Number(e.target.value);
+      $('#d-extra-out').textContent = moneyR(ui.extra);
+      var P = planCompare(ui.extra);
+      if (P) { $('#d-plan-body').innerHTML = planBodyHTML(P, ui.extra); var ch = $('#ch-deuda'); if (ch) drawDeuda(ch, P, ui.extra); var lg = $('#d-resumen .legend'); if (lg) lg.innerHTML = '<span><i class="kl kl-out"></i>Solo cuotas</span>' + (ui.extra > 0 ? '<span><i class="kl kl-save"></i>Con ' + moneyR(ui.extra) + ' extra al mes</span>' : ''); }
+    });
+    $('#d-plan').addEventListener('change', function (e) { if (e.target.id === 'd-extra' && ready && (cfg().prefs || {}).extraDeuda !== Number(e.target.value)) opPrefs({ extraDeuda: Number(e.target.value) }); });
     $$('input[name="tj-t"]').forEach(function (r) { r.addEventListener('change', function () { $('#tj-credit').hidden = !$('#tj-t-c').checked; }); });
     $('#f-pago').addEventListener('submit', savePago);
     $('#pg-tj').addEventListener('change', pagoHint);
@@ -3281,6 +3828,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
         lastW = window.innerWidth;
         if (ui.tab === 'resumen') { drawGuil(); var cm = $('#ch-meses'); if (cm) drawMeses(cm); }
         else if (ui.tab === 'analisis') { var cr = $('#ch-ritmo'); if (cr) drawRitmo(cr); }
+        else if (ui.tab === 'deudas') renderDeudas();
       }, 140);
     });
     try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', drawGuil); } catch (e) { /* viejo */ }

@@ -498,6 +498,42 @@ p { margin: 0; }
 .d-plan-t th[scope=row] { white-space: normal; }
 .d-plan-t td, .d-plan-t th { padding-inline: 6px; }
 
+/* Factura: foto y lectura */
+.scan { display: grid; gap: 8px; }
+.scan-row { display: flex; gap: 8px; align-items: stretch; }
+.scan-row[hidden] { display: none; }
+.scan-btn { flex: 1; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1.5px dashed var(--rule-2); border-radius: 12px; background: var(--sheet-2); text-align: left; color: var(--ink); }
+.scan-btn:hover { background: var(--wash); border-color: var(--ink-3); }
+.scan-btn svg { width: 28px; height: 28px; flex: none; }
+.scan-btn b { display: block; font-size: 15px; }
+.scan-btn small { display: block; font-size: 12.5px; color: var(--ink-3); }
+.scan-row .btn { align-self: stretch; min-height: 0; }
+.scan-st { margin: 0; font-size: 13px; color: var(--ink-2); display: grid; gap: 6px; }
+.scan-st:empty { display: none; }
+.ocr-bar { display: block; height: 6px; border-radius: 3px; background: var(--sheet-2); overflow: hidden; }
+.ocr-bar i { display: block; height: 100%; background: var(--ink); transition: width .2s; }
+.scan-foto { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: start; padding: 10px; border: 1px solid var(--rule); border-radius: 12px; background: var(--sheet-2); }
+.scan-thumb { padding: 0; border: 0; border-radius: 8px; overflow: hidden; background: var(--rule); width: 88px; height: 118px; cursor: zoom-in; }
+.scan-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.scan-info { display: grid; gap: 6px; min-width: 0; justify-items: start; }
+.ocr-res { display: grid; gap: 4px; width: 100%; }
+.ocr-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ocr-total { font-size: 22px; font-weight: 700; }
+.ocr-line, .ocr-msg, .ocr-hint { margin: 0; font-size: 12.5px; color: var(--ink-2); overflow-wrap: anywhere; }
+.ocr-msg b { color: var(--ink); }
+.ocr-hint { color: var(--ink-3); }
+.ocr-alt { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 4px; font-size: 12.5px; color: var(--ink-3); }
+.ocr-alt .chip { min-height: 28px; padding: 3px 10px; font-size: 12.5px; }
+.filled { animation: filled 1.6s ease-out; }
+@keyframes filled { 0%, 30% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-in) 55%, transparent); background-color: color-mix(in srgb, var(--c-in) 12%, var(--sheet)); } 100% { box-shadow: 0 0 0 0 transparent; } }
+textarea.input { resize: vertical; min-height: 64px; line-height: 1.4; }
+.clip { width: 14px; height: 14px; vertical-align: -2px; color: var(--ink-3); }
+dialog.viewer { width: 100vw; height: 100dvh; max-width: 100vw; max-height: 100dvh; margin: 0; padding: 0; border: 0; background: rgba(0, 0, 0, .92); }
+dialog.viewer[open] { display: grid; place-items: center; }
+dialog.viewer::backdrop { background: rgba(0, 0, 0, .9); }
+dialog.viewer img { max-width: 100%; max-height: 100dvh; object-fit: contain; cursor: zoom-out; }
+.viewer-x { position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); right: 12px; background: rgba(255, 255, 255, .15); color: #fff; }
+
 /* Leyenda y gráficas */
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 6px; font-size: 12.5px; color: var(--ink-2); }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
@@ -1113,6 +1149,17 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
         <label><input type="radio" name="dm-tipo" id="dm-t-i" value="i"><span><i class="dot dot-i"></i>Ingreso</span></label>
         <label><input type="radio" name="dm-tipo" id="dm-t-a" value="a"><span><i class="dot dot-a"></i>Ahorro</span></label>
       </div>
+      <div class="scan" id="dm-scan">
+        <div class="scan-row" id="dm-scan-btns">
+          <button type="button" class="scan-btn" data-act="foto-cam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.5" r="3.5"/></svg><span><b>Escanear factura</b><small>Toma una foto y lleno el monto, la fecha y el comercio</small></span></button>
+          <button type="button" class="btn btn-sm" data-act="foto-gal">Galería</button>
+        </div>
+        <p class="scan-st" id="dm-ocr-st" aria-live="polite"></p>
+        <div class="scan-foto" id="dm-foto" hidden>
+          <button type="button" class="scan-thumb" data-act="foto-ver" aria-label="Ver la foto en grande"><img id="dm-foto-img" alt="Foto de la factura"></button>
+          <div class="scan-info"><div id="dm-ocr" aria-live="polite"></div><button type="button" class="link" data-act="foto-quitar">Quitar foto</button></div>
+        </div>
+      </div>
       <div>
         <label class="amount-field" for="dm-monto"><span class="cur" aria-hidden="true">$</span><span class="sr-only">Monto en dólares</span><input id="dm-monto" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" enterkeyhint="next"></label>
         <p class="amount-calc" id="dm-calc" aria-live="polite"></p>
@@ -1143,6 +1190,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
         <div class="field"><label for="dm-fecha">Fecha</label><input class="input" id="dm-fecha" type="date"></div>
       </div>
       <datalist id="dm-desc-list"></datalist>
+      <div class="field"><label for="dm-nota">Nota (opcional)</label><textarea class="input" id="dm-nota" rows="2" maxlength="500" placeholder="Algo para recordar: garantía de 1 año, regalo para mamá…"></textarea></div>
       <p class="form-error" id="dm-err" role="alert"></p>
     </div>
     <div class="sheet-foot">
@@ -1206,6 +1254,12 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="csv-file" accept=".csv,text/csv" hidden>
+<input type="file" id="foto-cam" accept="image/*" capture="environment" hidden>
+<input type="file" id="foto-gal" accept="image/*" hidden>
+<dialog class="viewer" id="dlg-img" aria-label="Foto de la factura">
+  <img id="img-big" alt="Foto de la factura">
+  <button type="button" class="icon-btn viewer-x" data-act="img-close" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+</dialog>
 <script>
 (function () {
   'use strict';
@@ -1625,7 +1679,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
         var t = v.t === 'i' || v.t === 'a' || v.t === 'p' ? v.t : 'g';
         if (t === 'p' && !v.tj) return;
         var c = t === 'p' ? '' : cm[v.c] && cm[v.c].t === t ? v.c : '_none-' + t;
-        movs.push({ id: id, k: k, t: t, m: round2(m), f: v.f, c: c, p: v.p || '', d: v.d || '', ts: Number(v.ts) || 0, e: v.e ? 1 : 0, tj: v.tj || '', dj: t === 'g' && v.dj ? v.dj : '', dx: v.dx ? 1 : 0 });
+        movs.push({ id: id, k: k, t: t, m: round2(m), f: v.f, c: c, p: v.p || '', d: v.d || '', ts: Number(v.ts) || 0, e: v.e ? 1 : 0, tj: v.tj || '', dj: t === 'g' && v.dj ? v.dj : '', dx: v.dx ? 1 : 0, img: typeof v.img === 'string' ? v.img : '', nt: typeof v.nt === 'string' ? v.nt : '' });
       });
     });
     movs.sort(function (a, b) { return a.f < b.f ? 1 : a.f > b.f ? -1 : b.ts - a.ts; });
@@ -1784,7 +1838,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     var m = D.meses[k];
     return !!(m && m.movs && Object.keys(m.movs).some(function (id) { return !!m.movs[id]; }));
   }
-  function movBody(m) { var b = { t: m.t, m: round2(m.m), f: m.f, c: m.c || '', p: m.p || '', d: m.d || '', ts: m.ts || Date.now(), e: m.e ? 1 : 0 }; if (m.t === 'p') b.tj = m.tj; if (m.dj) { b.dj = m.dj; b.dx = m.dx ? 1 : 0; } return b; }
+  function movBody(m) { var b = { t: m.t, m: round2(m.m), f: m.f, c: m.c || '', p: m.p || '', d: m.d || '', ts: m.ts || Date.now(), e: m.e ? 1 : 0 }; if (m.t === 'p') b.tj = m.tj; if (m.dj) { b.dj = m.dj; b.dx = m.dx ? 1 : 0; } if (m.img) b.img = m.img; if (m.nt) b.nt = m.nt; return b; }
   function catBody(c) { return { n: c.n, t: c.t, k: c.t === 'g' ? (c.k || 'n') : '', lim: c.lim > 0 ? round2(c.lim) : null, ord: c.ord || 0 }; }
 
   function commit(apply, writes) {
@@ -2368,9 +2422,10 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     if (withDate) sub.push(fechaCorta(m.f));
     if (m.d) sub.push(m.d);
     if (m.p) sub.push(metName(m.p));
+    if (m.nt) sub.push('«' + (m.nt.length > 38 ? m.nt.slice(0, 36) + '…' : m.nt) + '»');
     var amt = m.t === 'g' ? '−' + money(m.m) : m.t === 'i' ? '+' + money(m.m) : money(m.m);
     return '<button class="mov" type="button" data-act="edit" data-id="' + esc(m.id) + '" aria-label="' + esc(TIPO[m.t] + ' de ' + money(m.m) + ' en ' + c.n + (m.d ? ', ' + m.d : '') + '. Editar') + '">' +
-      '<i class="dot dot-' + m.t + '" aria-hidden="true"></i><span class="mov-main"><span class="mov-cat">' + esc(c.n) + '</span>' + (sub.length ? '<span class="mov-sub">' + esc(sub.join(' · ')) + '</span>' : '') + '</span>' +
+      '<i class="dot dot-' + m.t + '" aria-hidden="true"></i><span class="mov-main"><span class="mov-cat">' + esc(c.n) + (m.img ? ' <svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Con foto de factura"><path d="M20 11.5l-8.2 8.2a5 5 0 0 1-7.1-7.1l8.6-8.6a3.4 3.4 0 0 1 4.8 4.8L9.5 17.4a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8"/></svg>' : '') + '</span>' + (sub.length ? '<span class="mov-sub">' + esc(sub.join(' · ')) + '</span>' : '') + '</span>' +
       '<span class="mov-amt ' + m.t + '">' + amt + '</span></button>';
   }
   function ultimosHTML() {
@@ -2616,6 +2671,300 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       '<tfoot><tr><th scope="row">Total</th><td>' + money(tI) + '</td><td>' + money(tG) + '</td><td>' + money(tA) + '</td><td class="' + (tq < 0 ? 'neg' : '') + '">' + moneyAcct(tq) + '</td><td>' + (tI > 0 ? pctS(tA / tI) : '—') + '</td></tr></tfoot></table></div>';
   }
 
+  /* ============ Fotos de factura (guardadas en este dispositivo) ============ */
+  var FDB = null;
+  function fdb() {
+    if (FDB) return FDB;
+    FDB = new Promise(function (res, rej) {
+      try {
+        var r = indexedDB.open('cuentas-claras-fotos', 1);
+        r.onupgradeneeded = function () { r.result.createObjectStore('fotos'); };
+        r.onsuccess = function () { res(r.result); };
+        r.onerror = function () { rej(r.error); };
+      } catch (e) { rej(e); }
+    });
+    return FDB;
+  }
+  function fotoOp(mode, fn) {
+    return fdb().then(function (db) {
+      return new Promise(function (res, rej) {
+        var tx = db.transaction('fotos', mode), st = tx.objectStore('fotos'), out = fn(st);
+        tx.oncomplete = function () { res(out && out.result !== undefined ? out.result : out); };
+        tx.onerror = function () { rej(tx.error); };
+      });
+    });
+  }
+  function putFoto(id, blob) { return fotoOp('readwrite', function (st) { st.put(blob, id); }); }
+  function getFoto(id) { return fotoOp('readonly', function (st) { return st.get(id); }); }
+  function delFoto(id) { return fotoOp('readwrite', function (st) { st.delete(id); }); }
+  function fotoStats() {
+    return fdb().then(function (db) {
+      return new Promise(function (res) {
+        var n = 0, bytes = 0, tx = db.transaction('fotos', 'readonly'), c = tx.objectStore('fotos').openCursor();
+        c.onsuccess = function () { var cur = c.result; if (cur) { n++; bytes += (cur.value && cur.value.size) || 0; cur.continue(); } else res({ n: n, bytes: bytes }); };
+        c.onerror = function () { res({ n: 0, bytes: 0 }); };
+      });
+    });
+  }
+  function fotoKeys() {
+    return fdb().then(function (db) { return new Promise(function (res) { var r = db.transaction('fotos', 'readonly').objectStore('fotos').getAllKeys(); r.onsuccess = function () { res(r.result || []); }; r.onerror = function () { res([]); }; }); });
+  }
+  /* Borra la foto solo si ya ningún movimiento la usa (después de la ventana de "Deshacer") */
+  function delFotoLater(id) {
+    if (!id) return;
+    setTimeout(function () { var A2 = analyze(); if (!A2.movs.some(function (m) { return m.img === id; })) delFoto(id).catch(function () {}); }, 9000);
+  }
+  function loadImg(file) {
+    return new Promise(function (res, rej) {
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () { res({ img: img, url: url }); };
+      img.onerror = function () { URL.revokeObjectURL(url); rej(new Error('img')); };
+      img.src = url;
+    });
+  }
+  function toBlob(cv, q) { return new Promise(function (res) { cv.toBlob(function (b) { res(b); }, 'image/jpeg', q); }); }
+  /* Copia para guardar: máximo 1600 px, JPEG liviano */
+  function fotoGuardar(img) {
+    var s = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight)), cv = document.createElement('canvas');
+    cv.width = Math.round(img.naturalWidth * s); cv.height = Math.round(img.naturalHeight * s);
+    cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+    return toBlob(cv, 0.72);
+  }
+  /* Copia para leer: escala de grises, contraste estirado y tamaño ideal para el lector */
+  function fotoParaLeer(img) {
+    var w = img.naturalWidth, h = img.naturalHeight, target = Math.min(2400, Math.max(1500, w));
+    var s = target / w; if (h * s > 4200) s = 4200 / h;
+    var cv = document.createElement('canvas'); cv.width = Math.round(w * s); cv.height = Math.round(h * s);
+    var cx = cv.getContext('2d'); cx.imageSmoothingQuality = 'high'; cx.drawImage(img, 0, 0, cv.width, cv.height);
+    var d = cx.getImageData(0, 0, cv.width, cv.height), p = d.data, hist = new Uint32Array(256), n = p.length / 4, i;
+    for (i = 0; i < p.length; i += 4) { var g = (p[i] * 0.299 + p[i + 1] * 0.587 + p[i + 2] * 0.114) | 0; p[i] = g; hist[g]++; }
+    var lo = 0, hi = 255, acc = 0;
+    for (i = 0; i < 256; i++) { acc += hist[i]; if (acc > n * 0.02) { lo = i; break; } }
+    acc = 0;
+    for (i = 255; i >= 0; i--) { acc += hist[i]; if (acc > n * 0.02) { hi = i; break; } }
+    var rng = Math.max(1, hi - lo);
+    for (i = 0; i < p.length; i += 4) { var v = Math.max(0, Math.min(255, (p[i] - lo) * 255 / rng)); p[i] = p[i + 1] = p[i + 2] = v; }
+    cx.putImageData(d, 0, 0);
+    return cv;
+  }
+
+  /* ============ Lectura de facturas ============ */
+  var OCR = { lib: null, worker: null };
+  function loadScript(src) {
+    return new Promise(function (res, rej) { var s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = function () { rej(new Error('script')); }; document.head.appendChild(s); });
+  }
+  function ocrWorker(onProg) {
+    var cfgO = window.CC_OCR || {};
+    var libP = window.Tesseract ? Promise.resolve() : loadScript(cfgO.lib || 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js');
+    return libP.then(function () {
+      if (OCR.worker) { OCR.onProg = onProg; return OCR.worker; }
+      OCR.onProg = onProg;
+      var opts = { logger: function (m) { if (OCR.onProg) OCR.onProg(m); } };
+      if (cfgO.workerPath) opts.workerPath = cfgO.workerPath;
+      if (cfgO.corePath) opts.corePath = cfgO.corePath;
+      if (cfgO.langPath) opts.langPath = cfgO.langPath;
+      return window.Tesseract.createWorker('spa', 1, opts).then(function (w) {
+        return w.setParameters({ preserve_interword_spaces: '1', user_defined_dpi: '300' }).then(function () { OCR.worker = w; return w; });
+      });
+    });
+  }
+  var MERCH = [
+    ['super selectos', 'Super Selectos', 'Supermercado'], ['selectos', 'Super Selectos', 'Supermercado'], ['walmart', 'Walmart', 'Supermercado'], ['despensa de don juan', 'La Despensa de Don Juan', 'Supermercado'],
+    ['maxi despensa', 'Maxi Despensa', 'Supermercado'], ['despensa familiar', 'Despensa Familiar', 'Supermercado'], ['la colonia', 'La Colonia', 'Supermercado'], ['pricesmart', 'PriceSmart', 'Supermercado'], ['super del pueblo', 'Super del Pueblo', 'Supermercado'],
+    ['puma', 'Puma', 'Transporte'], ['texaco', 'Texaco', 'Transporte'], ['shell', 'Shell', 'Transporte'], ['gasolinera', 'Gasolinera', 'Transporte', 1], ['uno petrol', 'UNO', 'Transporte'], ['alba petr', 'Alba', 'Transporte'], ['uber', 'Uber', 'Transporte'],
+    ['farmacia san nicolas', 'Farmacia San Nicolás', 'Salud'], ['farmacias economicas', 'Farmacias Económicas', 'Salud'], ['farmavalue', 'Farmavalue', 'Salud'], ['farmacia', 'Farmacia', 'Salud', 1], ['laboratorio', 'Laboratorio', 'Salud', 1], ['clinica', 'Clínica', 'Salud', 1], ['hospital', 'Hospital', 'Salud', 1],
+    ['pollo campero', 'Pollo Campero', 'Comida fuera'], ['pizza hut', 'Pizza Hut', 'Comida fuera'], ['mcdonald', "McDonald's", 'Comida fuera'], ['burger king', 'Burger King', 'Comida fuera'], ['starbucks', 'Starbucks', 'Comida fuera'],
+    ['wendy', "Wendy's", 'Comida fuera'], ['subway', 'Subway', 'Comida fuera'], ['kfc', 'KFC', 'Comida fuera'], ['pupuseria', 'Pupusería', 'Comida fuera', 1], ['restaurante', 'Restaurante', 'Comida fuera', 1], ['cafe', 'Café', 'Comida fuera', 1], ['biggest', 'Biggest', 'Comida fuera'], ['china wok', 'China Wok', 'Comida fuera'], ['little caesars', 'Little Caesars', 'Comida fuera'],
+    ['claro', 'Claro', 'Servicios'], ['tigo', 'Tigo', 'Servicios'], ['digicel', 'Digicel', 'Servicios'], ['caess', 'CAESS', 'Servicios'], ['aes el salvador', 'AES', 'Servicios'], ['anda', 'ANDA', 'Servicios'], ['delsur', 'Delsur', 'Servicios'],
+    ['cinemark', 'Cinemark', 'Entretenimiento'], ['cinepolis', 'Cinépolis', 'Entretenimiento'],
+    ['siman', 'Siman', 'Compras'], ['omnisport', 'Omnisport', 'Compras'], ['carrion', 'Carrión', 'Compras'], ['prisma moda', 'Prisma Moda', 'Compras'], ['vidri', 'Vidrí', 'Compras'], ['freund', 'Freund', 'Compras'], ['epa', 'EPA', 'Compras'], ['tienda', 'Tienda', 'Supermercado', 1]
+  ];
+  var AMT_RE = /(?:\$|US\$|USD)?\s?(\d{1,3}(?:[,.\s]\d{3})*|\d+)\s?[.,]\s?(\d{2})(?!\d)/g;
+  function fixDigits(s) {
+    /* Corrige confusiones típicas dentro de números: O→0, I/l→1, S→5, B→8 (sin lookbehind, para iPhones viejos) */
+    return String(s).replace(/[$\d][0-9OoIl|SB.,]{1,14}/g, function (tok) {
+      if ((tok.match(/\d/g) || []).length < 2) return tok;
+      return tok.replace(/[Oo]/g, '0').replace(/[Il|]/g, '1').replace(/S/g, '5').replace(/B/g, '8');
+    });
+  }
+  function amountsIn(line) {
+    var out = [], m; AMT_RE.lastIndex = 0;
+    var L = fixDigits(line);
+    while ((m = AMT_RE.exec(L))) {
+      var ent = m[1].replace(/[,.\s]/g, ''), v = parseFloat(ent + '.' + m[2]);
+      if (isFinite(v) && v > 0 && v < 100000) out.push({ v: Math.round(v * 100) / 100, idx: m.index });
+    }
+    return out;
+  }
+  function parseRecibo(text) {
+    var lines = String(text || '').split(/\r?\n/).map(function (l) { return l.replace(/\s+/g, ' ').trim(); }).filter(Boolean);
+    var N = lines.map(function (l) { return norm(l); });
+    var cands = [], all = [];
+    lines.forEach(function (l, i) {
+      var n = N[i], am = amountsIn(l);
+      if (!am.length) {
+        /* Montos en la línea siguiente a la palabra TOTAL */
+        if (/\btotal\b/.test(n) && i + 1 < lines.length && !/[a-z]{4}/.test(N[i + 1].replace(/us|usd/g, ''))) { am = amountsIn(lines[i + 1]).map(function (x) { x.next = 1; return x; }); }
+        if (!am.length) return;
+      }
+      var v = am[am.length - 1].v, sc = 0, why = '';
+      var neg = /cambio|vuelto|efectivo|recibido|pago con|tarjeta|propina sugerida|ahorr|descuento|desc\.|puntos|saldo|cuota|precio unit|cant\b|p\.?\s?unit/.test(n);
+      var sub = /sub\s?-?\s?total|subtot/.test(n), tax = /\biva\b|impuesto|13 ?%|retenc|percep|fovial|cotrans|gravad|exent|no suj/.test(n);
+      if (/total\s*a\s*pagar|total\s*pagar|monto\s*total|total\s*general|gran\s*total|total\s*usd|total\s*\$|importe\s*total|total\s*venta/.test(n)) { sc = 100; why = 't'; }
+      else if (/\btotal\b|\btota1\b|\bt0tal\b/.test(n) && !sub && !tax && !/items|articulos|productos|unidades|lineas/.test(n)) { sc = 80; why = 't'; }
+      else if (/a\s*pagar|importe/.test(n) && !neg) sc = 55;
+      if (neg) sc -= 70;
+      if (sub) sc -= 30;
+      if (tax) sc -= 40;
+      sc += i / lines.length * 8;
+      all.push({ v: v, sc: sc, line: l, i: i, sub: sub, tax: tax, neg: neg });
+      if (sc > 30) cands.push({ v: v, sc: sc, line: l, i: i });
+    });
+    var res = { total: null, linea: '', conf: 'baja', fecha: null, comercio: '', cat: '', alternativas: [] };
+    var nums = all.filter(function (x) { return !x.neg; }).map(function (x) { return x.v; });
+    if (cands.length) {
+      cands.sort(function (a, b) { return b.sc - a.sc || b.i - a.i; });
+      var best = cands[0];
+      res.total = best.v; res.linea = best.line;
+      var reps = cands.filter(function (c) { return Math.abs(c.v - best.v) < 0.005; }).length;
+      var subL = all.filter(function (x) { return x.sub; }).map(function (x) { return x.v; });
+      var taxL = all.filter(function (x) { return x.tax; }).map(function (x) { return x.v; });
+      var cuadra = subL.some(function (s) { return Math.abs(s - best.v) < 0.015 || taxL.some(function (t) { return Math.abs(s + t - best.v) < 0.015; }); });
+      var items = all.filter(function (x) { return x.i < best.i && !x.neg && !x.sub && !x.tax && x.sc <= 30; });
+      var suma = Math.round(items.reduce(function (a, x) { return a + x.v; }, 0) * 100) / 100;
+      if (items.length >= 2 && Math.abs(suma - best.v) < 0.015) cuadra = true;
+      var maxNum = Math.max.apply(null, nums.concat([0]));
+      res.conf = best.sc >= 95 || reps >= 2 || cuadra ? 'alta' : best.sc >= 75 && best.v >= maxNum * 0.6 ? 'media' : 'baja';
+      if (best.v < maxNum * 0.3 && res.conf !== 'alta') res.conf = 'baja';
+    } else if (nums.length) {
+      var srt = nums.slice().sort(function (a, b) { return b - a; });
+      res.total = srt[0]; res.conf = 'baja';
+      res.linea = (all.filter(function (x) { return x.v === srt[0]; })[0] || {}).line || '';
+    }
+    var seen = {};
+    res.alternativas = all.filter(function (x) { return !x.neg; }).sort(function (a, b) { return b.sc - a.sc || b.v - a.v; }).map(function (x) { return x.v; })
+      .filter(function (v) { if (seen[v] || v === res.total) return false; seen[v] = 1; return true; }).slice(0, 4);
+    /* Fecha */
+    var hoy = new Date(), best2 = null;
+    lines.forEach(function (l) {
+      var L = fixDigits(l), m, re = /(\d{1,2})\s?[\/\-.]\s?(\d{1,2})\s?[\/\-.]\s?(\d{2,4})|(\d{4})\s?[\/\-.]\s?(\d{1,2})\s?[\/\-.]\s?(\d{1,2})/g;
+      while ((m = re.exec(L))) {
+        var y, mo, d;
+        if (m[4]) { y = +m[4]; mo = +m[5]; d = +m[6]; } else { d = +m[1]; mo = +m[2]; y = +m[3]; if (y < 100) y += 2000; }
+        if (mo > 12 && d <= 12) { var tmp = d; d = mo; mo = tmp; }
+        var dt = new Date(y, mo - 1, d);
+        if (dt.getMonth() !== mo - 1 || dt > new Date(hoy.getTime() + 864e5) || hoy - dt > 2 * 365 * 864e5) continue;
+        if (!best2) best2 = iso(dt);
+      }
+      if (!best2) {
+        var mm = norm(L).match(/(\d{1,2})[\s\/\-.]*(?:de\s*)?(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)[a-z]*\.?[\s\/\-.]*(?:de\s*)?(\d{4})/);
+        if (mm) { var dt2 = new Date(+mm[3], MESES_C.indexOf(mm[2]), +mm[1]); if (dt2 <= hoy && hoy - dt2 < 2 * 365 * 864e5) best2 = iso(dt2); }
+      }
+    });
+    res.fecha = best2;
+    /* Comercio */
+    var full = ' ' + N.join(' ') + ' ';
+    var generic = false;
+    for (var k = 0; k < MERCH.length; k++) { if (full.indexOf(' ' + MERCH[k][0]) >= 0 || full.indexOf(MERCH[k][0] + ' ') >= 0) { res.comercio = MERCH[k][1]; res.cat = MERCH[k][2]; generic = !!MERCH[k][3]; break; } }
+    if (!res.comercio || generic) {
+      for (var j = 0; j < Math.min(6, lines.length); j++) {
+        var nl = N[j], letters = (lines[j].match(/[A-Za-zÁÉÍÓÚÑáéíóúñ]/g) || []).length;
+        if (letters < 4 || letters < lines[j].length * 0.5) continue;
+        if (/\bnit\b|\bnrc\b|factura|ticket|\bdte\b|tel\b|telefono|www|http|direccion|col\.|colonia|calle|av\.|avenida|sucursal|giro|resolucion|serie|caja|cajero|fecha|hora|consumidor|credito fiscal|documento|codigo|control|bienvenid|gracias|cliente/.test(nl)) continue;
+        res.comercio = lines[j].replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñ0-9&'. -]/g, '').trim().toLowerCase().replace(/(^|\s)\S/g, function (c) { return c.toUpperCase(); }).slice(0, 40);
+        break;
+      }
+    }
+    return res;
+  }
+  /* ---- Foto y lectura dentro del formulario ---- */
+  function fotoUI() {
+    var has = !!F.foto;
+    $('#dm-foto').hidden = !has;
+    $('#dm-scan-btns').hidden = has;
+    if (has) $('#dm-foto-img').src = F.foto.url;
+  }
+  function fotoReset() {
+    if (F.foto && F.foto.url) { try { URL.revokeObjectURL(F.foto.url); } catch (e) { /* nada */ } }
+    F.foto = null; F.ocrTok = (F.ocrTok || 0) + 1;
+    $('#dm-ocr').innerHTML = ''; $('#dm-ocr-st').textContent = '';
+    fotoUI();
+  }
+  function flash(sel) { var el = $(sel); if (!el) return; el.classList.remove('filled'); void el.offsetWidth; el.classList.add('filled'); }
+  function ocrStatus(txt, pct) {
+    $('#dm-ocr-st').innerHTML = esc(txt) + (pct != null ? ' <b class="mono">' + Math.round(pct * 100) + '%</b>' : '') + (pct != null ? '<span class="ocr-bar"><i style="width:' + Math.round(pct * 100) + '%"></i></span>' : '');
+  }
+  function onFotoFile(file) {
+    if (!file) return;
+    if (!/^image\//.test(file.type || 'image/')) { toast('Elige una foto (JPG o PNG).'); return; }
+    var tok = (F.ocrTok || 0) + 1; F.ocrTok = tok;
+    ocrStatus('Preparando la foto…');
+    loadImg(file).then(function (o) {
+      return fotoGuardar(o.img).then(function (blob) {
+        if (F.foto && F.foto.url) URL.revokeObjectURL(F.foto.url);
+        F.foto = { id: uid('f'), blob: blob, url: URL.createObjectURL(blob), isNew: true };
+        fotoUI();
+        var cv = fotoParaLeer(o.img);
+        URL.revokeObjectURL(o.url);
+        leerFactura(cv, tok);
+      });
+    }).catch(function () { ocrStatus(''); toast('No se pudo abrir esa foto. Prueba con otra.'); });
+  }
+  function leerFactura(cv, tok) {
+    $('#dm-ocr').innerHTML = '';
+    ocrStatus('Abriendo el lector de facturas…', 0);
+    ocrWorker(function (m) {
+      if (tok !== F.ocrTok) return;
+      if (/loading|load/i.test(m.status) && /lang|traineddata/i.test(m.status)) ocrStatus('Descargando el lector (solo la primera vez)…', m.progress || 0);
+      else if (/recogniz/i.test(m.status)) ocrStatus('Leyendo la factura…', m.progress || 0);
+    }).then(function (w) {
+      return w.recognize(cv);
+    }).then(function (r) {
+      if (tok !== F.ocrTok) return;
+      var txt = r && r.data ? r.data.text : '';
+      mostrarLectura(parseRecibo(txt), r && r.data ? r.data.confidence : 0);
+    }).catch(function (e) {
+      if (tok !== F.ocrTok) return;
+      if (window.console) console.warn('[Cuentas Claras] Lectura', e);
+      ocrStatus('');
+      $('#dm-ocr').innerHTML = '<p class="ocr-msg">No pude abrir el lector. La primera vez necesita internet para descargarse. La foto sí queda guardada con tu gasto.</p>';
+    });
+  }
+  function mostrarLectura(R, ocrConf) {
+    ocrStatus('');
+    var filled = [];
+    if (R.total != null) {
+      var cur = parseMonto($('#dm-monto').value);
+      if (!(cur > 0) || F.montoDeFoto) { $('#dm-monto').value = R.total.toFixed(2); F.montoDeFoto = true; filled.push('#dm-monto'); $('#dm-calc').textContent = ''; }
+    }
+    if (R.fecha && !F.edit) { $('#dm-fecha').value = R.fecha; filled.push('#dm-fecha'); }
+    if (R.comercio && !$('#dm-desc').value.trim()) { $('#dm-desc').value = R.comercio; filled.push('#dm-desc'); }
+    if (F.tipo === 'g' && !F.catTouched) {
+      var cat = null;
+      if (R.comercio) { var prev = A.movs.filter(function (m) { return m.t === 'g' && norm(m.d) === norm(R.comercio); })[0]; if (prev) cat = catInfo(prev.c); }
+      if (!cat && R.cat) cat = catList('g').filter(function (c) { return norm(c.n) === norm(R.cat); })[0] || null;
+      if (cat && cat.id.indexOf('_none') !== 0) { $('#dm-cat').value = cat.n; renderCatChips(); filled.push('#dm-cat'); }
+    }
+    filled.forEach(flash);
+    var h;
+    if (R.total == null) {
+      h = '<p class="ocr-msg"><b>No encontré el total.</b> Escríbelo tú; la foto queda guardada para que recuerdes la compra.</p>';
+    } else {
+      var conf = R.conf === 'baja' || ocrConf < 55 ? 'baja' : R.conf;
+      var pill = conf === 'alta' ? '<span class="pill ok">✓ Total verificado</span>' : conf === 'media' ? '<span class="pill warn">Revisa el total</span>' : '<span class="pill bad">! Revisa el total</span>';
+      h = '<div class="ocr-res"><div class="ocr-top"><span class="ocr-total mono">' + money(R.total) + '</span>' + pill + '</div>' +
+        (R.linea ? '<p class="ocr-line">Leído en: <span class="mono">«' + esc(R.linea.slice(0, 48)) + '»</span></p>' : '') +
+        '<p class="ocr-line">' + [R.comercio ? esc(R.comercio) : '', R.fecha ? esc(fechaCorta(R.fecha)) : 'Sin fecha: usé la de hoy'].filter(Boolean).join(' · ') + '</p>';
+      if (R.alternativas.length) h += '<div class="ocr-alt"><span>¿Era otro monto?</span>' + R.alternativas.map(function (v) { return '<button type="button" class="chip" data-act="ocr-monto" data-v="' + v + '">' + money(v) + '</button>'; }).join('') + '</div>';
+      h += '<p class="ocr-hint">' + (conf === 'alta' ? 'El total cuadra con la factura. Igual dale un vistazo antes de guardar.' : 'Compara con la foto antes de guardar; tócala para verla en grande.') + '</p></div>';
+    }
+    $('#dm-ocr').innerHTML = h;
+  }
+  function verFoto(url) {
+    if (!url) return;
+    $('#img-big').src = url;
+    showDlg($('#dlg-img'));
+  }
   /* ---- Tarjetas ---- */
   function prevAvg(s, k) {
     var ks = [1, 2, 3].map(function (i) { return addMonths(k, -i); }).filter(function (x) { return s.first && x >= s.first.slice(0, 7); });
@@ -3149,7 +3498,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       if (ui.fmet && m.p !== ui.fmet) return false;
       if (q) {
         var c = catInfo(m.c);
-        if (norm(m.d + ' ' + (c ? c.n : '') + ' ' + (m.p ? metName(m.p) : '')).indexOf(q) < 0) return false;
+        if (norm(m.d + ' ' + (m.nt || '') + ' ' + (c ? c.n : '') + ' ' + (m.p ? metName(m.p) : '')).indexOf(q) < 0) return false;
       }
       return true;
     });
@@ -3237,8 +3586,9 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     if (A.ej) h += '<button class="btn" type="button" data-act="clear-ej">Borrar datos de ejemplo</button>';
     else if (ready && !A.movs.length) h += '<button class="btn" type="button" data-act="load-ej">Cargar datos de ejemplo</button>';
     if (A.movs.length) h += '<button class="btn btn-danger" type="button" data-act="clear-all">Borrar todos mis datos</button>';
-    h += '</div><p class="fine">El CSV trae fecha, tipo, categoría, método, descripción y monto, y se abre en Excel o Google Sheets. Al importar, las categorías nuevas se crean solas.</p>';
+    h += '</div><p class="fine" id="fotos-st"></p><p class="fine">El CSV trae fecha, tipo, categoría, método, descripción y monto, y se abre en Excel o Google Sheets. Al importar, las categorías nuevas se crean solas.</p>';
     el.innerHTML = h;
+    fotoStats().then(function (s) { var fs = $('#fotos-st'); if (fs) fs.textContent = s.n ? s.n + (s.n === 1 ? ' foto de factura guardada' : ' fotos de facturas guardadas') + ' en este dispositivo (' + (s.bytes / 1048576).toFixed(1) + ' MB). Las fotos no viajan en el CSV.' : ''; }).catch(function () {});
   }
 
   /* ============ Guilloché del cheque ============ */
@@ -3270,7 +3620,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   }
 
   /* ============ Formulario de movimiento ============ */
-  var F = { edit: null, tipo: 'g', catTouched: false, metTouched: false };
+  var F = { edit: null, tipo: 'g', catTouched: false, metTouched: false, foto: null, ocrTok: 0, montoDeFoto: false };
   function showDlg(d) { if (!d.open) { try { d.showModal(); } catch (e) { d.setAttribute('open', ''); } } }
   function closeDlg(d) { if (d.open) { try { d.close(); } catch (e) { d.removeAttribute('open'); } } }
   function setTipo(t) {
@@ -3348,8 +3698,9 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     renderCatChips(); renderMetChips();
   }
   function openAdd() {
-    F.edit = null; F.catTouched = false; F.metTouched = false;
+    F.edit = null; F.catTouched = false; F.metTouched = false; F.montoDeFoto = false;
     $('#f-mov').reset();
+    fotoReset();
     var ult = (cfg().prefs || {}).ultMet, um = ult && metMap()[ult];
     $('#dm-met').value = um ? um.n : '';
     var cur = curKey();
@@ -3366,8 +3717,11 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     if (!m) return;
     if (m.t === 'p') { openPago(m.tj, m); return; }
     if (m.dj && A.deu.by[m.dj]) { openPagoDeuda(m.dj, m); return; }
-    F.edit = m; F.catTouched = true; F.metTouched = true;
+    F.edit = m; F.catTouched = true; F.metTouched = true; F.montoDeFoto = false;
     $('#f-mov').reset();
+    fotoReset();
+    $('#dm-nota').value = m.nt || '';
+    if (m.img) getFoto(m.img).then(function (b) { if (b && F.edit === m) { F.foto = { id: m.img, blob: b, url: URL.createObjectURL(b), isNew: false }; fotoUI(); } }).catch(function () {});
     $('#dm-monto').value = m.m.toFixed(2);
     var c = catInfo(m.c);
     $('#dm-cat').value = c && c.id.indexOf('_none') !== 0 ? c.n : '';
@@ -3401,7 +3755,9 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       if (!met) { newMet = { id: uid('p-'), n: cap(metTxt), ord: nextMetOrd() }; met = newMet; }
     }
     var old = F.edit;
-    var mov = { id: old ? old.id : uid('m'), t: t, m: monto, f: fecha, c: cat.id, p: met ? met.id : '', d: $('#dm-desc').value.trim(), ts: old ? old.ts : Date.now(), e: 0 };
+    var mov = { id: old ? old.id : uid('m'), t: t, m: monto, f: fecha, c: cat.id, p: met ? met.id : '', d: $('#dm-desc').value.trim(), ts: old ? old.ts : Date.now(), e: 0, img: F.foto ? F.foto.id : '', nt: $('#dm-nota').value.trim().slice(0, 500) };
+    if (F.foto && F.foto.isNew) putFoto(F.foto.id, F.foto.blob).catch(function () { toast('El gasto se guardó, pero la foto no: este navegador no tiene espacio.'); });
+    if (old && old.img && old.img !== mov.img) delFotoLater(old.img);
     opSaveMov(mov, old, newCat, newMet);
     closeDlg($('#dlg-mov'));
     var nm = TIPO[t];
@@ -3423,6 +3779,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     if (!m) return;
     closeDlg($('#dlg-mov'));
     opDelMov(m);
+    delFotoLater(m.img);
     var copy = Object.assign({}, m);
     toast('Movimiento eliminado.', { label: 'Deshacer', fn: function () { opSaveMov(copy, null, null, null); } });
   }
@@ -3470,10 +3827,10 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   /* ============ CSV ============ */
   function toCSV() {
     function q(s) { s = String(s == null ? '' : s); return /[",\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
-    var lines = ['fecha,tipo,categoria,metodo,descripcion,monto'];
+    var lines = ['fecha,tipo,categoria,metodo,descripcion,monto,nota'];
     A.movs.slice().sort(function (a, b) { return a.f < b.f ? -1 : a.f > b.f ? 1 : a.ts - b.ts; }).forEach(function (m) {
       var c = catInfo(m.c);
-      lines.push([m.f, TIPO[m.t].toLowerCase(), m.t === 'p' ? metName(m.tj) : c ? c.n : '', m.p ? metName(m.p) : '', m.d, m.m.toFixed(2)].map(q).join(','));
+      lines.push([m.f, TIPO[m.t].toLowerCase(), m.t === 'p' ? metName(m.tj) : c ? c.n : '', m.p ? metName(m.p) : '', m.d, m.m.toFixed(2), m.nt || ''].map(q).join(','));
     });
     return lines.join('\n');
   }
@@ -3526,7 +3883,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     if (rows.length < 2) { toast('El archivo no tiene movimientos.'); return; }
     var head = rows[0].map(norm);
     function idx(names) { for (var i = 0; i < head.length; i++) if (names.indexOf(head[i]) >= 0) return i; return -1; }
-    var iF = idx(['fecha', 'date']), iT = idx(['tipo', 'type']), iC = idx(['categoria', 'category']), iP = idx(['metodo', 'metodo de pago', 'method', 'payment method']), iD = idx(['descripcion', 'description', 'detalle', 'concepto']), iM = idx(['monto', 'amount', 'cantidad', 'valor', 'importe']);
+    var iF = idx(['fecha', 'date']), iT = idx(['tipo', 'type']), iC = idx(['categoria', 'category']), iP = idx(['metodo', 'metodo de pago', 'method', 'payment method']), iD = idx(['descripcion', 'description', 'detalle', 'concepto']), iM = idx(['monto', 'amount', 'cantidad', 'valor', 'importe']), iN = idx(['nota', 'notas', 'note', 'notes']);
     if (iF < 0 || iM < 0 || iC < 0) { toast('El CSV necesita al menos las columnas fecha, categoría y monto.'); return; }
     var seen = {};
     A.movs.forEach(function (m) { var c = catInfo(m.c); seen[movKey(m.f, m.t, m.t === 'p' ? metName(m.tj) : c ? c.n : '', m.m, m.d)] = 1; });
@@ -3555,7 +3912,7 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
       if (seen[key]) { dup++; return; }
       seen[key] = 1;
       if (t === 'p') movs.push({ id: uid('m'), t: 'p', m: round2(m), f: f, c: '', tj: findMet(cn), p: iP >= 0 ? findMet(r[iP]) : '', d: d, ts: Date.now() + n, e: 0 });
-      else movs.push({ id: uid('m'), t: t, m: round2(m), f: f, c: findCat(cn, t), p: iP >= 0 ? findMet(r[iP]) : '', d: d, ts: Date.now() + n, e: 0 });
+      else movs.push({ id: uid('m'), t: t, m: round2(m), f: f, c: findCat(cn, t), p: iP >= 0 ? findMet(r[iP]) : '', d: d, ts: Date.now() + n, e: 0, nt: iN >= 0 ? String(r[iN] || '').trim().slice(0, 500) : '' });
     });
     if (!movs.length) { toast(dup ? 'Todo ya estaba en tu libreta (' + dup + ' repetidos).' : 'No encontré movimientos válidos en el archivo.'); return; }
     opImport(movs, Object.keys(catsNew).map(function (k) { return catsNew[k]; }), Object.keys(metsNew).map(function (k) { return metsNew[k]; }));
@@ -3633,6 +3990,12 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
           break;
         case 'met-close': ui.editMet = null; renderCats(true); break;
         case 'met-del': delMet(id); break;
+        case 'foto-cam': $('#foto-cam').click(); break;
+        case 'foto-gal': $('#foto-gal').click(); break;
+        case 'foto-quitar': fotoReset(); break;
+        case 'foto-ver': if (F.foto) verFoto(F.foto.url); break;
+        case 'img-close': closeDlg($('#dlg-img')); break;
+        case 'ocr-monto': $('#dm-monto').value = Number(el.getAttribute('data-v')).toFixed(2); F.montoDeFoto = true; flash('#dm-monto'); break;
         case 'pago': openPago(id, null); break;
         case 'dpago': openPagoDeuda(id, null, false); break;
         case 'dpago-x': openPagoDeuda(id, null, true); break;
@@ -3716,6 +4079,9 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
     });
     $$('input[name="cn-t"]').forEach(function (r) { r.addEventListener('change', function () { $('#cn-k').hidden = !$('#cn-t-g').checked; }); });
     $('#tj-form').addEventListener('submit', saveCard);
+    ['foto-cam', 'foto-gal'].forEach(function (idf) { $('#' + idf).addEventListener('change', function (e) { var f = e.target.files && e.target.files[0]; e.target.value = ''; onFotoFile(f); }); });
+    $('#dm-monto').addEventListener('input', function () { F.montoDeFoto = false; });
+    $('#dlg-img').addEventListener('click', function (e) { if (e.target.id === 'dlg-img' || e.target.id === 'img-big') closeDlg($('#dlg-img')); });
     $('#dd-form').addEventListener('submit', saveDeuda);
     $('#f-dp').addEventListener('submit', savePagoDeuda);
     $('#dp-dj').addEventListener('change', function () { dpSync(!DP.edit); });
@@ -3878,6 +4244,11 @@ dialog.sheet form { display: flex; flex-direction: column; min-height: 0; flex: 
   bind();
   setTab(ui.tab);
   connect();
+  setTimeout(function () {
+    if (!ready || !window.indexedDB) return;
+    var used = {}; analyze().movs.forEach(function (m) { if (m.img) used[m.img] = 1; });
+    fotoKeys().then(function (ks) { ks.forEach(function (k) { if (!used[k]) delFoto(k).catch(function () {}); }); }).catch(function () {});
+  }, 15000);
 })();
 </script>
 </body>

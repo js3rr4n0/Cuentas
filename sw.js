@@ -1,5 +1,5 @@
 /* Cuentas Claras — caché para abrir al instante y funcionar sin internet */
-var VERSION = '4d9de5ef82';
+var VERSION = 'b2b1c9711f';
 var CORE = 'cc-core-' + VERSION, RUNTIME = 'cc-runtime-v1';
 var ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'fonts/archivo.woff2', 'fonts/spline-mono.woff2', 'icons/icon-192.png', 'icons/apple-touch-icon.png'];
 
